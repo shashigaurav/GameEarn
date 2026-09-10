@@ -1,0 +1,11 @@
+<svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ironclad Frontline cover art">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FF4D6D"/>
+      <stop offset="1" stop-color="#FF8FA3"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="320" fill="url(#g)"/>
+  <path d="M0,220 L160,60 L220,120 L60,280 Z" fill="#0A0B10" opacity="0.3"/>
+  <text x="32" y="270" font-family="Space Grotesk, Arial, sans-serif" font-size="40" font-weight="700" fill="#0A0B10" opacity="0.85">I</text>
+</svg>

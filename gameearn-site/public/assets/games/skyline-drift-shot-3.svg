@@ -1,0 +1,15 @@
+<svg viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skyline Drift gameplay screenshot 3">
+  <defs>
+    <linearGradient id="gs3" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#12141C"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="300" fill="url(#gs3)"/>
+  <g opacity="0.35" stroke="#0A0B10" stroke-width="10">
+        <line x1="-20" y1="80" x2="640" y2="30" />
+        <line x1="-20" y1="130" x2="640" y2="80" />
+      </g>
+  <rect x="24" y="24" width="140" height="18" rx="9" fill="#ffffff" opacity="0.18"/>
+  <rect x="24" y="252" width="220" height="24" rx="12" fill="#0A0B10" opacity="0.35"/>
+</svg>

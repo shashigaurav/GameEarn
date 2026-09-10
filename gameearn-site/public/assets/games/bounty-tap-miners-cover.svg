@@ -1,0 +1,11 @@
+<svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bounty Tap Miners cover art">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F0B429"/>
+      <stop offset="1" stop-color="#FFD873"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="320" fill="url(#g)"/>
+  <g opacity="0.35"><circle cx="500" cy="200" r="50" fill="none" stroke="#0A0B10" stroke-width="8"/><circle cx="440" cy="90" r="30" fill="none" stroke="#0A0B10" stroke-width="6"/></g>
+  <text x="32" y="270" font-family="Space Grotesk, Arial, sans-serif" font-size="40" font-weight="700" fill="#0A0B10" opacity="0.85">B</text>
+</svg>

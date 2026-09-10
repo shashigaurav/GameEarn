@@ -1,0 +1,11 @@
+<svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Block Harmony cover art">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A855F7"/>
+      <stop offset="1" stop-color="#D8B4FE"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="320" fill="url(#g)"/>
+  <g opacity="0.3"><rect x="40" y="40" width="40" height="40" rx="8" fill="#0A0B10"/><rect x="100" y="100" width="40" height="40" rx="8" fill="#0A0B10"/><rect x="160" y="40" width="40" height="40" rx="8" fill="#0A0B10"/><rect x="220" y="100" width="40" height="40" rx="8" fill="#0A0B10"/><rect x="280" y="40" width="40" height="40" rx="8" fill="#0A0B10"/><rect x="340" y="100" width="40" height="40" rx="8" fill="#0A0B10"/></g>
+  <text x="32" y="270" font-family="Space Grotesk, Arial, sans-serif" font-size="40" font-weight="700" fill="#0A0B10" opacity="0.85">B</text>
+</svg>
