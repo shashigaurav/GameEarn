@@ -19,17 +19,18 @@ function aboutPage() {
   return simplePage(
     "About GameEarn",
     [{ label: "Home", href: "/" }, { label: "About" }],
-    `<p>GameEarn is a discovery platform built for one purpose: helping players find gaming and reward apps worth their time. Instead of hosting games ourselves, we organize information about them — category, platform, reward type, ratings and features — so you can compare options before visiting an app's official page.</p>
+    `<p>GameEarn is a discovery platform built for one purpose: helping players find verified games, tasks, surveys, app offers and cashback deals worth their time. Instead of running these programs ourselves, we organize information about them — provider, reward range, eligibility, requirements and trust score — so you can compare and verify before you start.</p>
     <h2>What we do</h2>
-    <p>We list and describe games and reward apps across genres, from classic action and puzzle titles to apps built around points, gift cards and tournament rewards. Every listing links out to the developer's own official source for downloads and up-to-date terms.</p>
+    <p>We list and describe games and reward offers across genres and categories, and show a dashboard, leaderboard, streak and referral system so you can track your own activity. On this version of the site, dashboard, leaderboard and profile numbers are clearly marked demo data until a real backend and accounts are connected.</p>
     <h2>What we don't do</h2>
     <ul>
+      <li>We do not offer betting, gambling, casino-style wagering, deposits or real-money gaming of any kind.</li>
       <li>We do not host or distribute installation files (APKs or otherwise).</li>
-      <li>We do not process payments, wallets or withdrawals.</li>
-      <li>We do not guarantee earnings, payouts or rankings for any listed app.</li>
-      <li>We do not control the reward programs described on game pages — those are run entirely by each app's own provider.</li>
+      <li>We do not process real payments, wallets or withdrawals on this version of the site.</li>
+      <li>We do not guarantee earnings, payouts or rankings for any listed game or offer.</li>
+      <li>We do not control the reward programs described on game or offer pages — those are run entirely by each provider.</li>
     </ul>
-    <p>If something on a game page looks out of date, <a href="/contact/">let us know</a>.</p>`
+    <p>If something on a listing looks out of date, <a href="/contact/">let us know</a>.</p>`
   );
 }
 
@@ -79,11 +80,15 @@ function termsPage() {
     [{ label: "Home", href: "/" }, { label: "Terms & Conditions" }],
     `<p>By using GameEarn, you agree to the following terms.</p>
     <h2>Nature of the service</h2>
-    <p>GameEarn is an informational discovery platform for gaming and reward apps. We do not develop, publish, host or distribute the games and apps listed, and we do not control their reward programs, eligibility rules or payout terms.</p>
+    <p>GameEarn is an informational discovery platform for games and reward offers. We do not develop, publish, host or distribute the games and offers listed, and we do not control their reward programs, eligibility rules or payout terms.</p>
+    <h2>No gambling or betting</h2>
+    <p>GameEarn does not offer, host or link to betting, gambling, casino-style wagering, deposits or real-money gaming of any kind. Nothing on this site should be interpreted as such.</p>
     <h2>No guarantee of earnings</h2>
-    <p>Any mention of rewards, points, gift cards, cashback or tournament prizes on this site is descriptive only. GameEarn does not guarantee that any user will earn, receive or be eligible for any reward from any listed app. Reward availability varies by app, region and eligibility, and is determined solely by that app's provider.</p>
+    <p>Any mention of rewards, points, gift cards, cashback or tournament prizes on this site is descriptive only. GameEarn does not guarantee that any user will earn, receive or be eligible for any reward from any listed game or offer. Reward availability varies by provider, region and eligibility, and is determined solely by that provider.</p>
+    <h2>Demo data</h2>
+    <p>Dashboard totals, leaderboard rankings, profile statistics, referral counts and rewards history shown on this version of the site are placeholder demo data for layout purposes only, clearly labeled as such, and do not reflect real user accounts, balances or transactions.</p>
     <h2>Third-party sources</h2>
-    <p>"Visit Official Source" links direct you to the developer's own website or store listing. GameEarn is not responsible for the content, accuracy, security or terms of third-party sites.</p>
+    <p>"Start Offer", "Play / View Offer" and similar links direct you to the actual provider's own website, app or store listing. GameEarn is not responsible for the content, accuracy, security or terms of third-party sites.</p>
     <h2>Accuracy of information</h2>
     <p>We aim to keep listings accurate and up to date, but game details, ratings and reward information can change without notice. Always confirm current details on the official source before downloading or participating in a rewards program.</p>
     <h2>Limitation of liability</h2>
@@ -95,14 +100,16 @@ function disclaimerPage() {
   return simplePage(
     "Disclaimer",
     [{ label: "Home", href: "/" }, { label: "Disclaimer" }],
-    `<p>GameEarn is an independent discovery and information platform for gaming and reward apps.</p>
+    `<p>GameEarn is an independent discovery and information platform for games and reward offers.</p>
     <ul>
-      <li>We are not affiliated with the games or apps listed unless explicitly stated.</li>
-      <li>We do not guarantee any level of earnings, payouts or rewards from any listed app.</li>
-      <li>Reward availability varies by app, region and eligibility, and is controlled entirely by each app's own provider and its official terms.</li>
+      <li>GameEarn does not offer betting, gambling, casino-style wagering, deposits or real-money gaming of any kind.</li>
+      <li>We are not affiliated with the games, apps or offer providers listed unless explicitly stated.</li>
+      <li>We do not guarantee any level of earnings, payouts or rewards from any listed game or offer.</li>
+      <li>Reward availability varies by provider, region and eligibility, and is controlled entirely by that provider and its official terms.</li>
       <li>We do not host, distribute or verify installation files (including APKs) for any listed app.</li>
-      <li>Ratings, screenshots and descriptions shown on this site are for informational purposes and may not reflect the current state of an app after updates.</li>
-      <li>Always review an app's official terms, privacy policy and permissions before downloading or participating in any rewards program.</li>
+      <li>Dashboard, leaderboard, profile and rewards-history figures on this version of the site are demo data for layout purposes only, clearly labeled as such — not real balances or transactions.</li>
+      <li>Ratings, trust scores, screenshots and descriptions shown on this site are for informational purposes and may not reflect the current state of a game or offer after updates.</li>
+      <li>Always review a provider's official terms, privacy policy and permissions before starting any game or offer.</li>
     </ul>
     <p>If you believe a listing is inaccurate or misleading, please <a href="/contact/">contact us</a> so we can review it.</p>`
   );

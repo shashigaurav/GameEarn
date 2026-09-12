@@ -1,5 +1,12 @@
 User-agent: *
 Allow: /
 Disallow: /search/
+Disallow: /login/
+Disallow: /signup/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /referrals/
+Disallow: /rewards/history/
+Disallow: /admin/
 
 Sitemap: https://www.gameearn.example/sitemap.xml

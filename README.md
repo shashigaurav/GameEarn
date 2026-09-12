@@ -1,74 +1,88 @@
-# GameEarn
+# GameEarn 2026
 
-A premium, SEO-ready discovery platform for earning games, reward apps and popular games —
-built as a **dependency-free static site**. No backend, no auth, no admin panel, no payments,
-no APK hosting. Every page is pre-rendered HTML so it works instantly, indexes cleanly, and
-needs nothing but a static file host.
+A premium, dark, glassmorphism gaming/rewards discovery platform — still a **dependency-free
+static site**. No real backend, no functioning auth, no payments. Everything account-related
+(dashboard, leaderboard, profile, referrals, rewards history) uses clearly labeled **demo data**;
+everything auth-related (login/signup) is a working UI that explains it needs a backend to
+actually authenticate. An `/admin/` route ships as a UI mockup of the entities a future CMS
+would manage. GameEarn does **not** include betting, gambling, casino wagering, deposits or
+real-money gaming anywhere on the site.
 
-## Why static HTML instead of a framework
+## What changed in this redesign
 
-No build tooling or npm registry access is required to run or edit this project — just Node.js
-(built-in, no external packages). That keeps it framework-agnostic today and easy to port into
-Next.js / Astro / a real backend later, since the data layer (`data/games.js`), the templates
-(`build/pages/*.js`) and the components (`build/components.js`) are already cleanly separated
-from the HTML output.
+- New visual theme: near-black background, glassmorphism cards, neon green + electric blue as
+  the primary duo (violet used sparingly), glowing buttons, floating particles, card-hover glow,
+  number count-up animations, skeleton-ready dashboard styling.
+- New information architecture layered on top of the original games catalog:
+  - `/earn/` — the "Ways to Earn" hub (games, tasks, surveys, app offers, cashback, referrals,
+    daily challenges, quizzes)
+  - `/offers/` + `/offer/<slug>/` — a new **offers** catalog (tasks/surveys/app-offers/cashback)
+    separate from games, each with provider, reward range, difficulty, trust score and
+    last-verified date (`data/offers.js`)
+  - `/rewards/` + `/rewards/history/` — reward-type explainer + demo transaction history
+  - `/dashboard/` — demo stat cards (Total/Available/Pending/Completed) + daily streak
+  - `/leaderboard/` — demo top-earners table
+  - `/profile/` + `/referrals/` — demo profile/achievements + referral code with copy/share
+  - `/login/` + `/signup/` — real forms, but submitting shows a clear "connect a backend" message
+  - `/admin/` — non-functional CRUD-mockup for offers/games (noindexed, not linked in main nav)
+  - Sticky header now includes Login/Sign Up + search/notification/profile icons; a mobile
+    bottom nav (Home / Earn / Games / Rewards / Profile) appears under 720px.
+- All of the original games catalog, category pages, search, and legal pages carry over.
 
 ## Structure
 
 ```
-data/games.js          Single source of truth: 28 dummy games/apps + categories/reward types
-build/generate-assets.js  Generates SVG cover/icon/screenshot art per game (no external images)
-build/components.js    Reusable "components" (header, footer, game card, FAQ, badges, etc.)
-build/layout.js         Page shell: <head> metadata, JSON-LD injection, header/footer wiring
-build/pages/*.js        One template per page type (home, listing, detail, search, static)
-build/build.js           Orchestrates everything → writes /public
-css/styles.css           Design system (tokens, layout, components)
-js/main.js               Mobile nav, FAQ accordions, filters/sort/search — vanilla JS only
-public/                  Build output — this is what you deploy
+data/games.js            28 dummy games/apps (unchanged catalog from the original build)
+data/offers.js            16 dummy tasks/surveys/app-offers/cashback deals, with trust scoring
+data/demo.js               Demo-only dashboard/streak/leaderboard/profile/referral/transaction data
+build/generate-assets.js        SVG art generator for games
+build/generate-offer-assets.js  SVG art generator for offers
+build/components.js       Reusable "components" — header, footer, bottom nav, cards, badges,
+                           trust score bar, stat cards, streak days, leaderboard rows, etc.
+build/layout.js            Page shell: <head> metadata, JSON-LD, header/bottomNav/footer wiring
+build/pages/*.js           One template per page type
+build/build.js              Orchestrates everything → writes /public, sitemap.xml, robots.txt
+css/styles.css              Full design system (2026 neon/glass theme)
+js/main.js                   Nav, FAQ accordions, counters, grid filter/sort/search engine
+                              (shared by games + offers grids), streak claim demo (localStorage),
+                              referral copy/share, mixed games+offers global search
+public/                      Build output — deploy this folder
 ```
 
 ## Running / rebuilding
 
 ```bash
-node build/generate-assets.js   # (re)generate per-game SVG art into public/assets/games
-node build/build.js             # (re)generate every HTML page + sitemap.xml + robots.txt
+node build/generate-assets.js         # (re)generate per-game SVG art
+node build/generate-offer-assets.js   # (re)generate per-offer SVG art
+node build/build.js                   # (re)generate every HTML page + sitemap.xml + robots.txt
 ```
 
-Then open `public/index.html` directly in a browser, or serve the `public/` folder with any
-static server (`npx serve public`, Netlify, Vercel static hosting, GitHub Pages, nginx, etc.).
+Then open `public/index.html` or serve `public/` with any static host.
 
-To add or edit games, edit `data/games.js` only — never edit game data inside a template — then
-re-run both scripts above.
+To edit games: `data/games.js`. To edit offers: `data/offers.js`. To edit demo dashboard/
+leaderboard/streak/profile/referral numbers: `data/demo.js`. Never edit data inside a template —
+re-run both generate scripts and the build script after any data change.
 
-## What's implemented
+## Demo-data policy (important)
 
-- Homepage: hero, featured earning games, trending, popular earning games, categories, new
-  games, top rated, how-it-works, why-GameEarn, FAQ.
-- `/games/`, `/earning-games/`, `/trending/`, `/new-games/`, `/category/` and `/category/<slug>/`
-  listing pages with client-side search, category/platform/reward/genre filters, sort, and
-  Load More (all filtering happens in `js/main.js` against `data-*` attributes already rendered
-  server-side, so content is crawlable with JavaScript disabled too).
-- `/games/<slug>/` detail pages: full metadata, features, screenshots, reward info panel,
-  related games, FAQ, and a "Visit Official Source" CTA (dummy URL, `rel="nofollow sponsored"`).
-- `/search/` global client-side search over the full catalog.
-- Unique `<title>`, meta description, canonical URL and Open Graph tags on every page.
-- Schema.org JSON-LD: `Organization`, `WebSite` + `SearchAction`, `BreadcrumbList` on every
-  inner page, and `VideoGame` + `AggregateRating` on every game page.
-- `sitemap.xml` and `robots.txt` generated from the same page list used to build the site.
-- Semantic HTML, skip link, visible focus states, `prefers-reduced-motion` support, accessible
-  mobile nav, descriptive image alt text, `loading="lazy"` on below-the-fold images.
-- Legal/trust pages: About, Contact (demo form, no backend), Privacy Policy, Terms & Conditions,
-  Disclaimer — all written to avoid guaranteed-earnings language, plus a 404 page.
+Per the brief, no part of this build fabricates real users, balances or transactions. Every page
+that shows dashboard/leaderboard/profile/referral/transaction data renders a visible
+"Demo data" banner next to it, and the footer disclaimer, About, Terms and Disclaimer pages all
+say this explicitly. When a real backend is connected, replace the data sources in
+`data/demo.js` (and the corresponding page templates) with real API/account calls — the rest of
+the markup and styling needs no changes.
 
-## Intentionally not included (per brief)
+## Database-ready structure
 
-Supabase, any backend/API, authentication, an admin panel, payments/wallets, and APK hosting.
-`data/games.js` is structured so a future backend can replace it with real API calls without
-touching any template.
+`data/games.js`, `data/offers.js` and `data/demo.js` map directly onto the entities named in the
+brief: `games`, `offers`/`providers`, `users`, `rewards`/`transactions`, `referrals`, `reviews`
+(see each offer's `reviews` array), `daily_rewards`, `achievements`. Swapping a data file's export
+for a real database/API call is the only change needed to go live — no template touches raw data.
 
 ## Before going live
 
-- Replace `SITE_URL` in `build/components.js` with your real production domain (metadata,
-  canonical URLs, sitemap and JSON-LD all read from this one constant).
-- Replace each game's dummy `sourceUrl` with the real official download/source link.
+- Replace `SITE_URL` in `build/components.js` with your real production domain.
+- Replace each game's/offer's dummy `sourceUrl`/CTA link with the real official link.
+- Connect a real backend (Supabase/Firebase/PostgreSQL) for auth, the dashboard, leaderboard,
+  profile, referrals and admin actions — all currently UI-only by design.
 - Swap the generated SVG art for real cover images/screenshots when available.
