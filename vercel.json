@@ -1,0 +1,17 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "public",
+  "trailingSlash": true,
+  "rewrites": [
+    { "source": "/", "destination": "/api/home" },
+    { "source": "/games/", "destination": "/api/games" },
+    { "source": "/games/:slug/", "destination": "/api/game-detail?slug=:slug" },
+    { "source": "/category/", "destination": "/api/categories" },
+    { "source": "/category/:slug/", "destination": "/api/category?slug=:slug" },
+    { "source": "/trending/", "destination": "/api/trending" },
+    { "source": "/new-games/", "destination": "/api/new-games" },
+    { "source": "/earning-games/", "destination": "/api/earning-games" },
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/admin/games/edit/:id", "destination": "/admin/games/edit/?id=:id" }
+  ]
+}

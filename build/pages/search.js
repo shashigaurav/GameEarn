@@ -1,20 +1,7 @@
-function searchPage(games, offers) {
-  const gameItems = games.map((g) => ({
-    type: "game",
-    name: g.name,
-    slug: g.slug,
-    category: g.category,
-    genre: g.genre,
-    developer: g.developer,
-    rewardType: g.rewardType,
-    platform: g.platform,
-    rating: g.rating,
-    freeToPlay: g.freeToPlay,
-    description: g.description,
-    image: g.image,
-    icon: g.icon,
-    newRelease: g.newRelease,
-  }));
+function searchPage(offers) {
+  // Games are no longer embedded at build time — they're fetched live from
+  // Supabase in the browser (see js/search-live.js) so newly added/edited/
+  // deleted games show up here without a rebuild. Offers stay local/static.
   const offerItems = offers.map((o) => ({
     type: "offer",
     name: o.title,
@@ -31,7 +18,6 @@ function searchPage(games, offers) {
     icon: o.icon,
     newRelease: o.newOffer,
   }));
-  const dataset = [...gameItems, ...offerItems];
 
   return `
 <section class="page-head">
@@ -48,7 +34,7 @@ function searchPage(games, offers) {
         <input type="search" id="siteSearchInput" placeholder="Try 'earning', 'racing', 'cashback', or a provider name..." autofocus />
       </div>
     </div>
-    <div class="result-meta"><span class="result-count" id="searchResultCount">Type to search</span></div>
+    <div class="result-meta"><span class="result-count" id="searchResultCount">Loading games…</span></div>
     <div class="grid" id="searchResults"></div>
     <div class="empty-state" id="searchEmptyState" style="display:none;">
       <h3>No results found</h3>
@@ -56,7 +42,8 @@ function searchPage(games, offers) {
     </div>
   </div>
 </section>
-<script id="site-dataset" type="application/json">${JSON.stringify(dataset)}</script>
+<script id="site-dataset" type="application/json">${JSON.stringify(offerItems)}</script>
+<script type="module" src="/js/search-live.js"></script>
 `;
 }
 

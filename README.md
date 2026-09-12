@@ -1,88 +1,166 @@
-# GameEarn 2026
+# GameEarn
 
-A premium, dark, glassmorphism gaming/rewards discovery platform — still a **dependency-free
-static site**. No real backend, no functioning auth, no payments. Everything account-related
-(dashboard, leaderboard, profile, referrals, rewards history) uses clearly labeled **demo data**;
-everything auth-related (login/signup) is a working UI that explains it needs a backend to
-actually authenticate. An `/admin/` route ships as a UI mockup of the entities a future CMS
-would manage. GameEarn does **not** include betting, gambling, casino wagering, deposits or
-real-money gaming anywhere on the site.
+A dark, glassmorphism gaming/rewards discovery platform. The **games catalog is now backed by
+Supabase** (Postgres + Auth + Storage + RLS) with a secure admin panel for managing it; offers,
+the demo dashboard/leaderboard/profile/referrals, and all legal pages remain local/static exactly
+as before.
 
-## What changed in this redesign
+## Architecture (read this first if you're extending the project)
 
-- New visual theme: near-black background, glassmorphism cards, neon green + electric blue as
-  the primary duo (violet used sparingly), glowing buttons, floating particles, card-hover glow,
-  number count-up animations, skeleton-ready dashboard styling.
-- New information architecture layered on top of the original games catalog:
-  - `/earn/` — the "Ways to Earn" hub (games, tasks, surveys, app offers, cashback, referrals,
-    daily challenges, quizzes)
-  - `/offers/` + `/offer/<slug>/` — a new **offers** catalog (tasks/surveys/app-offers/cashback)
-    separate from games, each with provider, reward range, difficulty, trust score and
-    last-verified date (`data/offers.js`)
-  - `/rewards/` + `/rewards/history/` — reward-type explainer + demo transaction history
-  - `/dashboard/` — demo stat cards (Total/Available/Pending/Completed) + daily streak
-  - `/leaderboard/` — demo top-earners table
-  - `/profile/` + `/referrals/` — demo profile/achievements + referral code with copy/share
-  - `/login/` + `/signup/` — real forms, but submitting shows a clear "connect a backend" message
-  - `/admin/` — non-functional CRUD-mockup for offers/games (noindexed, not linked in main nav)
-  - Sticky header now includes Login/Sign Up + search/notification/profile icons; a mobile
-    bottom nav (Home / Earn / Games / Rewards / Profile) appears under 720px.
-- All of the original games catalog, category pages, search, and legal pages carry over.
+This project has **no client-side JS framework and no bundler** — pages are either:
 
-## Structure
+1. **Pre-rendered static HTML** (built once by `node build/build.js`, output to `/public`) — used
+   for pages that don't depend on live game data: offers, legal pages, the demo dashboard/
+   leaderboard/profile/referrals, and the admin panel's UI shells.
+2. **Vercel serverless functions** under `/api` — used for every page that must reflect the live
+   `games` table without a rebuild: the homepage's game sections, `/games/`, `/games/<slug>/`,
+   `/category/*`, `/trending/`, `/new-games/`, `/earning-games/`, and `/sitemap.xml`. `vercel.json`
+   rewrites the clean URLs to these functions. They query Supabase with the **public anon key**
+   only — the same key the browser uses — because every read they do is already allowed for
+   anonymous users under RLS (published games only).
+3. **Client-side Supabase calls** — the admin panel (`/admin/...`) and the games portion of
+   `/search/` talk to Supabase directly from the browser using `@supabase/supabase-js` (loaded
+   via `esm.sh`, no bundler needed) and the anon key. Security here is enforced by **Row Level
+   Security**, not by hiding pages — see `supabase/schema.sql`.
 
-```
-data/games.js            28 dummy games/apps (unchanged catalog from the original build)
-data/offers.js            16 dummy tasks/surveys/app-offers/cashback deals, with trust scoring
-data/demo.js               Demo-only dashboard/streak/leaderboard/profile/referral/transaction data
-build/generate-assets.js        SVG art generator for games
-build/generate-offer-assets.js  SVG art generator for offers
-build/components.js       Reusable "components" — header, footer, bottom nav, cards, badges,
-                           trust score bar, stat cards, streak days, leaderboard rows, etc.
-build/layout.js            Page shell: <head> metadata, JSON-LD, header/bottomNav/footer wiring
-build/pages/*.js           One template per page type
-build/build.js              Orchestrates everything → writes /public, sitemap.xml, robots.txt
-css/styles.css              Full design system (2026 neon/glass theme)
-js/main.js                   Nav, FAQ accordions, counters, grid filter/sort/search engine
-                              (shared by games + offers grids), streak claim demo (localStorage),
-                              referral copy/share, mixed games+offers global search
-public/                      Build output — deploy this folder
-```
+Because of #2, **local preview now needs `vercel dev`** (which runs the serverless functions and
+honors `vercel.json`) rather than just opening `public/index.html`. Static-only pages will still
+open directly in a browser, but the homepage/games/category pages will not.
 
-## Running / rebuilding
+## 1. Create your Supabase project
+
+1. Go to [supabase.com](https://supabase.com) → New Project. Pick any name/region/password.
+2. Once it's ready, go to **Project Settings → API** and copy:
+   - **Project URL** → this is `SUPABASE_URL`
+   - **anon public** key → this is `SUPABASE_ANON_KEY`
+   (Never copy the **service_role** key into this project — it isn't used anywhere here.)
+
+## 2. Run the SQL schema
+
+Open **SQL Editor** in the Supabase dashboard, paste the contents of `supabase/schema.sql`, and
+run it. This creates:
+- `public.games` (with indexes on category/status/featured/trending/popular/new_release, and a
+  unique index on `slug` via its UNIQUE constraint)
+- `public.profiles` (role: `admin` | `user`, auto-created for every new auth user via a trigger)
+- The `is_admin()` helper function
+- RLS policies on both tables (public can SELECT published games only; only admins can
+  INSERT/UPDATE/DELETE games)
+- The `game-assets` Storage bucket (public read, admin-only write) and its RLS policies
+
+Then run `supabase/seed.sql` (also in the SQL Editor) to load all 28 games from the existing
+catalog as `status = 'published'` — nothing from the current dummy data is lost.
+
+## 3. Storage bucket
+
+`schema.sql` already creates the `game-assets` bucket via SQL and sets it public with admin-only
+write policies. Nothing else to do here — but you can double check it under **Storage** in the
+dashboard; you should see `game-assets` listed as a public bucket.
+
+## 4. Configure Auth
+
+No special configuration is required — email/password auth is enabled by default on a new
+Supabase project (**Authentication → Providers → Email**). If you disabled it, turn it back on.
+You do *not* need to enable public signups for end users; admins are the only accounts you'll
+create (see next step).
+
+## 5. Create your first admin
+
+There is no hardcoded admin password anywhere in this project. To create your own admin account:
+
+1. In the Supabase dashboard, go to **Authentication → Users → Add User** (or **Invite User**) and
+   create a user with your own email + a password you choose.
+2. This automatically creates a matching row in `public.profiles` with `role = 'user'` (via the
+   trigger in `schema.sql`).
+3. Promote it to admin — in the **SQL Editor**, run:
+   ```sql
+   update public.profiles set role = 'admin' where email = 'you@example.com';
+   ```
+4. Log in at `/admin/login/` with that email and password.
+
+You can repeat step 3 for any other email you want to make an admin later.
+
+## 6. Environment variables
+
+| Variable | Where it's used | Safe to expose? |
+|---|---|---|
+| `SUPABASE_URL` | Build step (`build/build.js`) → injected into `public/js/env-config.js`; also read directly by `/api` functions at request time | Yes |
+| `SUPABASE_ANON_KEY` | Same as above | Yes — this is the public anon key, meant to be used from the browser. RLS is the actual security boundary. |
+
+Copy `.env.example` to `.env` for local use with `vercel dev`. **Never** add
+`SUPABASE_SERVICE_ROLE_KEY` anywhere in this project — it is not used, and `.gitignore` already
+excludes `.env*` files from version control.
+
+In Vercel: **Project Settings → Environment Variables** → add both variables (Production,
+Preview, and Development environments) → redeploy.
+
+## 7. Run locally
 
 ```bash
-node build/generate-assets.js         # (re)generate per-game SVG art
-node build/generate-offer-assets.js   # (re)generate per-offer SVG art
-node build/build.js                   # (re)generate every HTML page + sitemap.xml + robots.txt
+npm install          # installs @supabase/supabase-js for the /api functions
+cp .env.example .env # fill in your real SUPABASE_URL / SUPABASE_ANON_KEY
+npx vercel dev        # runs the static site + /api functions together, honoring vercel.json
 ```
 
-Then open `public/index.html` or serve `public/` with any static host.
+`npx vercel dev` is required (not a plain static server) because the homepage, games, and
+category pages are serverless functions, not static files. The first time, `vercel dev` will ask
+you to link the folder to a Vercel project — you can create a new one or link the existing one.
 
-To edit games: `data/games.js`. To edit offers: `data/offers.js`. To edit demo dashboard/
-leaderboard/streak/profile/referral numbers: `data/demo.js`. Never edit data inside a template —
-re-run both generate scripts and the build script after any data change.
+## 8. Deploy to Vercel
 
-## Demo-data policy (important)
+If the project is already connected to Vercel (as you mentioned), just push these changes to the
+branch Vercel deploys from — `vercel.json`'s `buildCommand` (`npm run build`) and
+`outputDirectory` (`public`) tell Vercel everything it needs. Two things to check in the Vercel
+dashboard for a project that was previously "just static files":
 
-Per the brief, no part of this build fabricates real users, balances or transactions. Every page
-that shows dashboard/leaderboard/profile/referral/transaction data renders a visible
-"Demo data" banner next to it, and the footer disclaimer, About, Terms and Disclaimer pages all
-say this explicitly. When a real backend is connected, replace the data sources in
-`data/demo.js` (and the corresponding page templates) with real API/account calls — the rest of
-the markup and styling needs no changes.
+1. **Environment Variables** — add `SUPABASE_URL` and `SUPABASE_ANON_KEY` as described above.
+2. **Build & Development Settings** — if the project was previously configured with a manual
+   "Output Directory" of `public` and no build command (i.e., you were committing pre-built HTML),
+   switch **Build Command** to `npm run build` (or just leave it — `vercel.json` sets this for you)
+   so Vercel regenerates `/public` — including `env-config.js` with your real keys, and the
+   `/admin` pages — on every deploy.
 
-## Database-ready structure
+`public/` is now `.gitignore`d — it's build output, not something to commit — since it depends on
+environment variables at build time.
 
-`data/games.js`, `data/offers.js` and `data/demo.js` map directly onto the entities named in the
-brief: `games`, `offers`/`providers`, `users`, `rewards`/`transactions`, `referrals`, `reviews`
-(see each offer's `reviews` array), `daily_rewards`, `achievements`. Swapping a data file's export
-for a real database/API call is the only change needed to go live — no template touches raw data.
+## Project structure
 
-## Before going live
+```
+data/games.js, data/offers.js, data/demo.js   Local data (offers/demo unchanged; games.js is
+                                                now only used for the CATEGORIES/PLATFORMS/
+                                                REWARD_TYPES reference lists and as the source
+                                                for supabase/seed.sql — not for live game data)
+supabase/schema.sql                            Tables, indexes, RLS policies, storage bucket
+supabase/seed.sql                              28 games seeded from the existing catalog
+lib/supabaseServer.js                          Server-side Supabase client (anon key only)
+lib/supabaseClient.js                          Browser Supabase client (ESM via esm.sh)
+lib/gameQueries.js                             Server-side read helpers, mapped to the shape
+                                                the existing templates already expect
+lib/errorPage.js                               Shared error page for serverless functions
+api/home.js, games.js, game-detail.js,         Serverless functions — live game data, wired
+    category.js, categories.js, trending.js,   up via vercel.json rewrites
+    new-games.js, earning-games.js, sitemap.js
+services/gameService.js                        Client-side CRUD + storage uploads
+services/authService.js                        Client-side auth wrapper (sign in/out, role check)
+js/admin/auth-guard.js, login.js,               Per-page admin glue (imports the services above)
+    dashboard.js, games-list.js, game-form.js
+js/search-live.js                              Live game search (offers stay static)
+build/pages/admin/*.js                          Admin panel page templates (static shells)
+vercel.json                                     Rewrites + build/output config
+package.json                                    Only dependency: @supabase/supabase-js
+.env.example                                    Env var template (no real secrets)
+```
 
-- Replace `SITE_URL` in `build/components.js` with your real production domain.
-- Replace each game's/offer's dummy `sourceUrl`/CTA link with the real official link.
-- Connect a real backend (Supabase/Firebase/PostgreSQL) for auth, the dashboard, leaderboard,
-  profile, referrals and admin actions — all currently UI-only by design.
-- Swap the generated SVG art for real cover images/screenshots when available.
+## Final test checklist
+
+**Visitor:** homepage loads with live games, `/games/` and category pages filter live data,
+`/games/<slug>/` loads by slug (404s cleanly for a bad/draft slug), draft games never appear on
+the public site or in the sitemap, `/search/` finds live games + static offers.
+
+**Admin:** `/admin/login/` signs in and rejects non-admin accounts; `/admin/dashboard/` shows live
+counts; Add/Edit Game create and update rows (with image upload to `game-assets`); Delete asks for
+confirmation and refreshes the list; Logout clears the session and redirects to login.
+
+**Security:** a non-admin (or logged-out) user is redirected out of `/admin/*` client-side, *and*
+— this is the real boundary — cannot INSERT/UPDATE/DELETE `games` at all, because RLS checks
+`public.is_admin()` on every write regardless of what the client sends. The `service_role` key is
+never present anywhere in this codebase.
