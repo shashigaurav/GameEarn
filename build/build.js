@@ -91,13 +91,13 @@ fs.writeFileSync(path.join(OUT, "assets", "og-default.svg"), FAVICON_SVG);
 
 /* ---------------- generate public env config (anon key is safe to expose) ---------------- */
 const envConfig = `window.__GAMEEARN_ENV = ${JSON.stringify({
-  SUPABASE_URL: process.env.SUPABASE_URL || "",
-  SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || "",
+  SUPABASE_URL: process.env.VITE_SUPABASE_URL || "",
+  SUPABASE_ANON_KEY: process.env.VITE_SUPABASE_ANON_KEY || "",
 })};`;
 fs.writeFileSync(path.join(OUT, "js", "env-config.js"), envConfig);
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) {
   console.warn(
-    "\n⚠️  SUPABASE_URL / SUPABASE_ANON_KEY are not set in this build environment.\n" +
+    "\n⚠️  VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are not set in this build environment.\n" +
       "   The admin panel and live search will show a 'Supabase isn't configured' notice\n" +
       "   until these are set (Vercel: Project Settings → Environment Variables).\n"
   );

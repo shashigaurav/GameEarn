@@ -31,9 +31,12 @@ open directly in a browser, but the homepage/games/category pages will not.
 
 1. Go to [supabase.com](https://supabase.com) → New Project. Pick any name/region/password.
 2. Once it's ready, go to **Project Settings → API** and copy:
-   - **Project URL** → this is `SUPABASE_URL`
-   - **anon public** key → this is `SUPABASE_ANON_KEY`
-   (Never copy the **service_role** key into this project — it isn't used anywhere here.)
+   - **Project URL** → this is `VITE_SUPABASE_URL`
+   - **anon public** key → this is `VITE_SUPABASE_ANON_KEY`
+   (Never copy the **service_role** key into this project — it isn't used anywhere here. Note: this
+   project has no Vite build step; the `VITE_` prefix is kept only because it's the exact variable
+   name used throughout — both `build/build.js` and the `/api` functions read it via plain
+   `process.env`.)
 
 ## 2. Run the SQL schema
 
@@ -83,8 +86,8 @@ You can repeat step 3 for any other email you want to make an admin later.
 
 | Variable | Where it's used | Safe to expose? |
 |---|---|---|
-| `SUPABASE_URL` | Build step (`build/build.js`) → injected into `public/js/env-config.js`; also read directly by `/api` functions at request time | Yes |
-| `SUPABASE_ANON_KEY` | Same as above | Yes — this is the public anon key, meant to be used from the browser. RLS is the actual security boundary. |
+| `VITE_SUPABASE_URL` | Build step (`build/build.js`) → injected into `public/js/env-config.js`; also read directly by `/api` functions at request time | Yes |
+| `VITE_SUPABASE_ANON_KEY` | Same as above | Yes — this is the public anon key, meant to be used from the browser. RLS is the actual security boundary. |
 
 Copy `.env.example` to `.env` for local use with `vercel dev`. **Never** add
 `SUPABASE_SERVICE_ROLE_KEY` anywhere in this project — it is not used, and `.gitignore` already
@@ -97,7 +100,7 @@ Preview, and Development environments) → redeploy.
 
 ```bash
 npm install          # installs @supabase/supabase-js for the /api functions
-cp .env.example .env # fill in your real SUPABASE_URL / SUPABASE_ANON_KEY
+cp .env.example .env # fill in your real VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY
 npx vercel dev        # runs the static site + /api functions together, honoring vercel.json
 ```
 
@@ -112,7 +115,7 @@ branch Vercel deploys from — `vercel.json`'s `buildCommand` (`npm run build`) 
 `outputDirectory` (`public`) tell Vercel everything it needs. Two things to check in the Vercel
 dashboard for a project that was previously "just static files":
 
-1. **Environment Variables** — add `SUPABASE_URL` and `SUPABASE_ANON_KEY` as described above.
+1. **Environment Variables** — add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` as described above.
 2. **Build & Development Settings** — if the project was previously configured with a manual
    "Output Directory" of `public` and no build command (i.e., you were committing pre-built HTML),
    switch **Build Command** to `npm run build` (or just leave it — `vercel.json` sets this for you)
