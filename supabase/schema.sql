@@ -14,14 +14,21 @@ create extension if not exists pgcrypto; -- gives us gen_random_uuid()
 -- ------------------------------------------------------------
 create table if not exists public.profiles (
   id         uuid primary key references auth.users (id) on delete cascade,
+  username   text,
   email      text,
   role       text not null default 'user' check (role in ('admin', 'user')),
   created_at timestamptz not null default now()
 );
 
+-- Safe to run against an existing database from before `username` existed.
+alter table public.profiles add column if not exists username text;
+
 -- Automatically create a profile row (role='user') whenever someone signs
--- up via Supabase Auth. Admins are promoted afterwards with a manual SQL
--- UPDATE (see README → "Create your first admin").
+-- up via Supabase Auth. Username comes from the `username` field passed in
+-- signUp()'s `options.data` on the client (see services/authService.js) —
+-- Supabase stores that in auth.users.raw_user_meta_data before this trigger
+-- runs. Admins are promoted afterwards with a manual SQL UPDATE (see
+-- README → "Create your first admin").
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -29,9 +36,11 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id, email, role)
-  values (new.id, new.email, 'user')
-  on conflict (id) do nothing;
+  insert into public.profiles (id, email, username, role)
+  values (new.id, new.email, new.raw_user_meta_data ->> 'username', 'user')
+  on conflict (id) do update set
+    email = excluded.email,
+    username = coalesce(excluded.username, public.profiles.username);
   return new;
 end;
 $$;
@@ -40,6 +49,25 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- Guards against a user editing their own `role` via the self-service
+-- UPDATE policy below — regardless of what the client sends, a non-admin's
+-- role is silently kept at its previous value. Only a direct SQL UPDATE
+-- (run by you, as the project owner, in the SQL Editor) can promote someone
+-- to admin — see README → "Create your first admin".
+create or replace function public.prevent_self_role_escalation()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.role is distinct from old.role and not public.is_admin() then
+    new.role := old.role;
+  end if;
+  return new;
+end;
+$$;
 
 -- ------------------------------------------------------------
 -- 2. games — the public catalog, managed by admins
@@ -125,11 +153,21 @@ create policy "profiles_select_own_or_admin"
   on public.profiles for select
   using (id = auth.uid() or public.is_admin());
 
--- no insert/update/delete policies are defined for profiles from the
--- client on purpose: rows are created only by the handle_new_user
--- trigger, and role changes are made directly in the SQL editor (see
--- README → "Create your first admin"). With RLS enabled and no
--- matching policy, those operations are denied by default.
+-- Users can update their own profile (e.g. username). `role` is protected
+-- by the prevent_self_role_escalation trigger below, not by this policy,
+-- so a crafted request that includes role='admin' is silently ignored
+-- rather than merely rejected — the row still saves, just without the
+-- role change.
+drop policy if exists "profiles_update_own_or_admin" on public.profiles;
+create policy "profiles_update_own_or_admin"
+  on public.profiles for update
+  using (id = auth.uid() or public.is_admin())
+  with check (id = auth.uid() or public.is_admin());
+
+drop trigger if exists profiles_prevent_role_escalation on public.profiles;
+create trigger profiles_prevent_role_escalation
+  before update on public.profiles
+  for each row execute procedure public.prevent_self_role_escalation();
 
 -- games policies ------------------------------------------------------
 drop policy if exists "games_select_published_or_admin" on public.games;

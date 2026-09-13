@@ -75,6 +75,9 @@ fs.mkdirSync(path.join(OUT, "services"), { recursive: true });
 fs.copyFileSync(path.join(__dirname, "..", "css", "styles.css"), path.join(OUT, "css", "styles.css"));
 fs.copyFileSync(path.join(__dirname, "..", "js", "main.js"), path.join(OUT, "js", "main.js"));
 fs.copyFileSync(path.join(__dirname, "..", "js", "search-live.js"), path.join(OUT, "js", "search-live.js"));
+fs.copyFileSync(path.join(__dirname, "..", "js", "login.js"), path.join(OUT, "js", "login.js"));
+fs.copyFileSync(path.join(__dirname, "..", "js", "signup.js"), path.join(OUT, "js", "signup.js"));
+fs.copyFileSync(path.join(__dirname, "..", "js", "profile-auth.js"), path.join(OUT, "js", "profile-auth.js"));
 for (const file of fs.readdirSync(path.join(__dirname, "..", "js", "admin"))) {
   fs.copyFileSync(path.join(__dirname, "..", "js", "admin", file), path.join(OUT, "js", "admin", file));
 }
