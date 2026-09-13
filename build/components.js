@@ -96,10 +96,6 @@ function header(active = "") {
       <a href="/profile/" class="icon-btn" aria-label="Profile">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6"/></svg>
       </a>
-      <div class="auth-actions">
-        <a href="/login/" class="btn btn-ghost btn-sm">Login</a>
-        <a href="/signup/" class="btn btn-primary btn-sm">Sign Up</a>
-      </div>
       <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav"><span></span></button>
     </div>
   </div>
@@ -107,8 +103,6 @@ function header(active = "") {
 <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
   ${NAV_LINKS.map(([href, label]) => `<a href="${href}">${label}</a>`).join("")}
   <a href="/search/">Search</a>
-  <a href="/login/">Login</a>
-  <a href="/signup/" class="btn btn-primary btn-block">Sign Up</a>
 </nav>`;
 }
 

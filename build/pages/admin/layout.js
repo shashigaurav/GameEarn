@@ -2,7 +2,7 @@
 const { SITE_NAME, SITE_URL } = require("../../components");
 
 const NAV = [
-  ["/admin/dashboard/", "Dashboard", "dashboard", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>'],
+  ["/admin/", "Dashboard", "dashboard", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>'],
   ["/admin/games/", "Games", "games", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8" width="18" height="10" rx="4"/><circle cx="8.5" cy="13" r="1.2"/><circle cx="16" cy="12.5" r="1"/></svg>'],
   ["/admin/games/add/", "Add Game", "add", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>'],
 ];
@@ -33,7 +33,7 @@ function adminLayout({ title, active = "", content, guarded = true, pageScript =
 <body class="admin-body">
 <div class="bg-glow" aria-hidden="true"></div>
 <header class="admin-topbar">
-  <a href="/admin/dashboard/" class="logo">
+  <a href="/admin/" class="logo">
     <span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 9.5C4 7 6 5 8.5 5h7C18 5 20 7 20 9.5S18 14 15.5 14h-7A4.5 4.5 0 014 9.5z" fill="#050609"/><circle cx="8.2" cy="9.5" r="1.1" fill="#F0B429"/><circle cx="10.4" cy="9.5" r="1.1" fill="#F0B429"/></svg></span>
     <span class="logo-word">Game<span>Earn</span></span>
   </a>

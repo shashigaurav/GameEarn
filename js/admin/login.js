@@ -1,6 +1,6 @@
 // js/admin/login.js
 import { isConfigured, configWarningHtml } from "../../lib/supabaseClient.js";
-import { signIn, isCurrentUserAdmin, signOut } from "../../services/authService.js";
+import { signIn, isCurrentUserAdmin, signOut, friendlyAuthError } from "../../services/authService.js";
 
 const form = document.getElementById("adminLoginForm");
 const errorBox = document.getElementById("loginError");
@@ -13,7 +13,7 @@ if (!isConfigured) {
 } else {
   // If already logged in as an admin, skip straight to the dashboard.
   isCurrentUserAdmin().then(({ isAdmin }) => {
-    if (isAdmin) window.location.href = "/admin/dashboard/";
+    if (isAdmin) window.location.href = "/admin/";
   });
 }
 
@@ -43,9 +43,9 @@ if (form) {
         return;
       }
 
-      window.location.href = "/admin/dashboard/";
+      window.location.href = "/admin/";
     } catch (err) {
-      setError(err && err.message ? err.message : "Login failed. Check your email and password.");
+      setError(friendlyAuthError(err));
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = "Log In";

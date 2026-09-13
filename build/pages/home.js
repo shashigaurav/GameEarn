@@ -180,9 +180,9 @@ function homePage(games, offers) {
   <div class="container">
     <div class="cta-banner glass">
       <h2>Ready to start discovering rewards?</h2>
-      <p>Create a free account to track your progress, build a streak and unlock referral rewards.</p>
+      <p>Browse verified games and offers, check the details, and head to the official source when you're ready.</p>
       <div class="hero-actions">
-        <a href="/signup/" class="btn btn-primary">Create Free Account</a>
+        <a href="/games/" class="btn btn-primary">Explore Games</a>
         <a href="/offers/" class="btn btn-outline-blue">Browse Offers</a>
       </div>
     </div>

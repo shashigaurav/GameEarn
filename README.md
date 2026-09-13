@@ -1,9 +1,9 @@
 # GameEarn
 
-A dark, glassmorphism gaming/rewards discovery platform. The **games catalog is now backed by
-Supabase** (Postgres + Auth + Storage + RLS) with a secure admin panel for managing it; offers,
-the demo dashboard/leaderboard/profile/referrals, and all legal pages remain local/static exactly
-as before.
+A dark, glassmorphism gaming/rewards discovery platform. The **games catalog is backed by
+Supabase** (Postgres + Auth + Storage + RLS) with a secure admin panel for managing it. There is
+**no public user-account system** — visitors browse, search and open games without logging in.
+The only authentication in this project is **admin authentication**, gating `/admin/*`.
 
 ## Architecture (read this first if you're extending the project)
 
@@ -26,6 +26,14 @@ This project has **no client-side JS framework and no bundler** — pages are ei
 Because of #2, **local preview now needs `vercel dev`** (which runs the serverless functions and
 honors `vercel.json`) rather than just opening `public/index.html`. Static-only pages will still
 open directly in a browser, but the homepage/games/category pages will not.
+
+## Authentication model
+
+There is exactly one authentication flow in this project: **admin login** at `/admin/login/`,
+which protects `/admin/`, `/admin/games/`, `/admin/games/add/`, and `/admin/games/edit/`. There is
+no signup, login, logout, or account system for regular visitors — `services/authService.js` is
+used only by the admin panel; public pages never import it. An "admin" is simply a row in
+`profiles` with `role = 'admin'` — created by you via the SQL Editor, never through a public form.
 
 ## Verify your Supabase connection
 
@@ -193,7 +201,7 @@ package.json                                    Only dependency: @supabase/supab
 `/games/<slug>/` loads by slug (404s cleanly for a bad/draft slug), draft games never appear on
 the public site or in the sitemap, `/search/` finds live games + static offers.
 
-**Admin:** `/admin/login/` signs in and rejects non-admin accounts; `/admin/dashboard/` shows live
+**Admin:** `/admin/login/` signs in and rejects non-admin accounts; `/admin/` shows live
 counts; Add/Edit Game create and update rows (with image upload to `game-assets`); Delete asks for
 confirmation and refreshes the list; Logout clears the session and redirects to login.
 

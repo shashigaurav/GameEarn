@@ -37,7 +37,6 @@ const { dashboardPage } = require("./pages/dashboard");
 const { leaderboardPage } = require("./pages/leaderboard");
 const { profilePage } = require("./pages/profile");
 const { referralsPage } = require("./pages/referrals");
-const { loginPage, signupPage } = require("./pages/auth");
 const { searchPage } = require("./pages/search");
 const { aboutPage, contactPage, privacyPage, termsPage, disclaimerPage, notFoundPage } = require("./pages/static");
 
@@ -49,8 +48,8 @@ const { gameFormPage } = require("./pages/admin/game-form");
 
 const OUT = path.join(__dirname, "..", "public");
 const NOINDEX_PATHS = new Set([
-  "/search/", "/login/", "/signup/", "/dashboard/", "/profile/", "/referrals/", "/rewards/history/",
-  "/admin/login/", "/admin/dashboard/", "/admin/games/", "/admin/games/add/", "/admin/games/edit/",
+  "/search/", "/dashboard/", "/profile/", "/referrals/", "/rewards/history/",
+  "/admin/", "/admin/login/", "/admin/games/", "/admin/games/add/", "/admin/games/edit/",
 ]);
 
 function write(relPath, html) {
@@ -75,9 +74,6 @@ fs.mkdirSync(path.join(OUT, "services"), { recursive: true });
 fs.copyFileSync(path.join(__dirname, "..", "css", "styles.css"), path.join(OUT, "css", "styles.css"));
 fs.copyFileSync(path.join(__dirname, "..", "js", "main.js"), path.join(OUT, "js", "main.js"));
 fs.copyFileSync(path.join(__dirname, "..", "js", "search-live.js"), path.join(OUT, "js", "search-live.js"));
-fs.copyFileSync(path.join(__dirname, "..", "js", "login.js"), path.join(OUT, "js", "login.js"));
-fs.copyFileSync(path.join(__dirname, "..", "js", "signup.js"), path.join(OUT, "js", "signup.js"));
-fs.copyFileSync(path.join(__dirname, "..", "js", "profile-auth.js"), path.join(OUT, "js", "profile-auth.js"));
 for (const file of fs.readdirSync(path.join(__dirname, "..", "js", "admin"))) {
   fs.copyFileSync(path.join(__dirname, "..", "js", "admin", file), path.join(OUT, "js", "admin", file));
 }
@@ -159,10 +155,6 @@ write("leaderboard", layout({ title: "Top Reward Earners Leaderboard | GameEarn"
 write("profile", layout({ title: "Your Profile | GameEarn", description: "View your GameEarn profile, achievements and streak.", path: "/profile/", active: "profile", noindex: true, content: profilePage(DEMO_PROFILE, DEMO_ACHIEVEMENTS) }));
 write("referrals", layout({ title: "Invite Friends & Earn Rewards | GameEarn", description: "Get your GameEarn referral code.", path: "/referrals/", active: "rewards", noindex: true, content: referralsPage(DEMO_REFERRAL) }));
 
-/* ---------------- generic (non-admin) login/signup demo pages ---------------- */
-write("login", layout({ title: "Log In | GameEarn", description: "Log in to your GameEarn account.", path: "/login/", noindex: true, content: loginPage() }));
-write("signup", layout({ title: "Sign Up | GameEarn", description: "Create a free GameEarn account.", path: "/signup/", noindex: true, content: signupPage() }));
-
 /* ---------------- search (offers embedded; games fetched live) ---------------- */
 write("search", layout({ title: "Search Games, Offers & Rewards | GameEarn", description: "Search GameEarn's full catalog of games and reward offers.", path: "/search/", noindex: true, content: searchPage(offers) }));
 
@@ -175,7 +167,7 @@ write("disclaimer", layout({ title: "Disclaimer | GameEarn", description: "GameE
 
 /* ---------------- admin panel (real, Supabase-backed) ---------------- */
 write("admin/login", adminLoginPage());
-write("admin/dashboard", adminDashboardPage());
+write("admin", adminDashboardPage());
 write("admin/games", adminGamesListPage());
 write("admin/games/add", gameFormPage("add"));
 write("admin/games/edit", gameFormPage("edit"));
@@ -187,8 +179,6 @@ fs.writeFileSync(path.join(OUT, "404.html"), layout({ title: "Page Not Found | G
 const robots = `User-agent: *
 Allow: /
 Disallow: /search/
-Disallow: /login/
-Disallow: /signup/
 Disallow: /dashboard/
 Disallow: /profile/
 Disallow: /referrals/
