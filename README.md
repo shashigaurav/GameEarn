@@ -27,16 +27,49 @@ Because of #2, **local preview now needs `vercel dev`** (which runs the serverle
 honors `vercel.json`) rather than just opening `public/index.html`. Static-only pages will still
 open directly in a browser, but the homepage/games/category pages will not.
 
+## Verify your Supabase connection
+
+I can't test your live project from here — this environment has no network access, and I never
+see your real `.env` values (correctly so). Instead, use the diagnostic endpoint built for this:
+
+1. Deploy (or run `vercel dev` locally) with `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` set.
+2. Visit `/api/health`. You'll get JSON like:
+   ```json
+   {
+     "ok": true,
+     "checks": {
+       "envVarsPresent": true,
+       "urlLooksValid": true,
+       "gamesTableReachable": true,
+       "publishedGamesCount": 28,
+       "authReachable": true
+     },
+     "errors": []
+   }
+   ```
+3. If `"ok": false`, the `errors` array tells you exactly what's wrong — most commonly:
+   - `envVarsPresent: false` → the env vars aren't set in this environment yet (or you're testing
+     locally without a `.env` file / `vercel dev`).
+   - `urlLooksValid: false` → double-check you copied the **Project URL**, not something else, from
+     Supabase → Project Settings → API.
+   - `gamesTableReachable: false` → usually means `supabase/schema.sql` hasn't been run yet against
+     this project, or the anon key doesn't match the project URL.
+   - `authReachable: false` → the Auth API didn't respond for this project/key combination.
+
+This check only ever uses the anon key and only ever does what an anonymous visitor's browser is
+already allowed to do under RLS — it's a real read against your live database, not a guess.
+
 ## 1. Create your Supabase project
 
 1. Go to [supabase.com](https://supabase.com) → New Project. Pick any name/region/password.
 2. Once it's ready, go to **Project Settings → API** and copy:
    - **Project URL** → this is `VITE_SUPABASE_URL`
-   - **anon public** key → this is `VITE_SUPABASE_ANON_KEY`
-   (Never copy the **service_role** key into this project — it isn't used anywhere here. Note: this
-   project has no Vite build step; the `VITE_` prefix is kept only because it's the exact variable
-   name used throughout — both `build/build.js` and the `/api` functions read it via plain
-   `process.env`.)
+   - **anon public** key (labeled **"Publishable key"** in newer Supabase dashboards — same thing)
+     → this is `VITE_SUPABASE_ANON_KEY`
+   (Never copy the **service_role**/**secret** key into this project — it isn't used anywhere here.
+   Note: this project has no Vite build step; the `VITE_` prefix is kept only because it's the
+   exact variable name used throughout — both `build/build.js` and the `/api` functions read it
+   via plain `process.env`.)
 
 ## 2. Run the SQL schema
 
@@ -142,6 +175,7 @@ lib/errorPage.js                               Shared error page for serverless 
 api/home.js, games.js, game-detail.js,         Serverless functions — live game data, wired
     category.js, categories.js, trending.js,   up via vercel.json rewrites
     new-games.js, earning-games.js, sitemap.js
+api/health.js                                   Live diagnostic endpoint — visit /api/health
 services/gameService.js                        Client-side CRUD + storage uploads
 services/authService.js                        Client-side auth wrapper (sign in/out, role check)
 js/admin/auth-guard.js, login.js,               Per-page admin glue (imports the services above)

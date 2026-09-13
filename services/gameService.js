@@ -69,9 +69,38 @@ export async function updateGame(id, payload) {
   return data;
 }
 
+/**
+ * Removes every file under game-assets/{gameId}/ (icon/, cover/, screenshots/).
+ * Storage's list() only returns one directory level, so each known subfolder is
+ * listed individually and the resulting paths are removed in a single call.
+ * Failures here are logged but never thrown — a storage cleanup problem
+ * shouldn't block the database delete the admin actually asked for.
+ */
+async function deleteGameAssets(gameId) {
+  const subfolders = ["icon", "cover", "screenshots"];
+  const pathsToRemove = [];
+
+  for (const folder of subfolders) {
+    const { data, error } = await supabase.storage.from(BUCKET).list(`${gameId}/${folder}`);
+    if (error) {
+      console.warn(`Couldn't list ${BUCKET}/${gameId}/${folder}:`, error.message);
+      continue;
+    }
+    for (const file of data || []) {
+      pathsToRemove.push(`${gameId}/${folder}/${file.name}`);
+    }
+  }
+
+  if (pathsToRemove.length) {
+    const { error } = await supabase.storage.from(BUCKET).remove(pathsToRemove);
+    if (error) console.warn(`Couldn't remove some files for game ${gameId}:`, error.message);
+  }
+}
+
 export async function deleteGame(id) {
   const { error } = await supabase.from("games").delete().eq("id", id);
   if (error) throw error;
+  await deleteGameAssets(id);
 }
 
 /**
