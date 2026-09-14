@@ -9,8 +9,8 @@ function adminLoginPage() {
     <div id="configWarning"></div>
     <form class="auth-form" id="adminLoginForm">
       <div>
-        <label for="admin-email">Email</label>
-        <input id="admin-email" type="email" required autocomplete="username" />
+        <label for="admin-username">Username</label>
+        <input id="admin-username" type="text" required autocomplete="username" autocapitalize="none" spellcheck="false" />
       </div>
       <div>
         <label for="admin-password">Password</label>

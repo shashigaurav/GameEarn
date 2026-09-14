@@ -18,7 +18,13 @@ import { isCurrentUserAdmin, signOut } from "../../services/authService.js";
     }
 
     const badge = document.getElementById("adminUserBadge");
-    if (badge) badge.textContent = (profile && profile.email) || user.email || "Admin";
+    if (badge) {
+      // Prefer the username; fall back to the local-part of the internal
+      // email (e.g. "admin" from "admin@gameearn.local") rather than showing
+      // the internal email itself.
+      const fallback = (user.email || "").split("@")[0];
+      badge.textContent = (profile && profile.username) || fallback || "Admin";
+    }
   } catch (err) {
     console.error("Admin auth check failed:", err);
     window.location.href = "/admin/login/";

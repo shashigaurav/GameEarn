@@ -1,6 +1,6 @@
 // js/admin/login.js
 import { isConfigured, configWarningHtml } from "../../lib/supabaseClient.js";
-import { signIn, isCurrentUserAdmin, signOut, friendlyAuthError } from "../../services/authService.js";
+import { signIn, isCurrentUserAdmin, signOut, friendlyAuthError, usernameToEmail } from "../../services/authService.js";
 
 const form = document.getElementById("adminLoginForm");
 const errorBox = document.getElementById("loginError");
@@ -30,11 +30,11 @@ if (form) {
     submitBtn.disabled = true;
     submitBtn.textContent = "Logging in…";
 
-    const email = document.getElementById("admin-email").value.trim();
+    const username = document.getElementById("admin-username").value.trim();
     const password = document.getElementById("admin-password").value;
 
     try {
-      await signIn(email, password);
+      await signIn(usernameToEmail(username), password);
       const { isAdmin } = await isCurrentUserAdmin();
 
       if (!isAdmin) {

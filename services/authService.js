@@ -8,6 +8,17 @@
 // to redirect.
 import { supabase } from "../lib/supabaseClient.js";
 
+// Supabase Auth is email-based under the hood, but the admin login screen only
+// ever asks for a username — this fixed internal domain is appended before
+// calling Auth, so nobody has to know or type a real email address. When you
+// create an admin user in the Supabase dashboard, use `<username>@<this domain>`
+// as that user's email (see README → "Create your first admin").
+export const ADMIN_EMAIL_DOMAIN = "gameearn.local";
+
+export function usernameToEmail(username) {
+  return `${String(username).trim().toLowerCase()}@${ADMIN_EMAIL_DOMAIN}`;
+}
+
 export async function signIn(email, password) {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
@@ -56,7 +67,7 @@ export function friendlyAuthError(err) {
     return "Couldn't reach the server. Check your connection and try again.";
   }
   if (lower.includes("invalid login credentials")) {
-    return "Incorrect email or password.";
+    return "Incorrect username or password.";
   }
   if (lower.includes("email not confirmed") || lower.includes("confirm")) {
     return "This account's email address hasn't been confirmed yet.";

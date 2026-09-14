@@ -109,19 +109,26 @@ create (see next step).
 
 ## 5. Create your first admin
 
-There is no hardcoded admin password anywhere in this project. To create your own admin account:
+There is no hardcoded admin password anywhere in this project. The admin login screen only asks
+for a **username** — Supabase Auth itself is still email-based under the hood, so a fixed internal
+domain (`gameearn.local`, set in `services/authService.js`) is appended automatically. You never
+type or see that email anywhere in the UI.
 
-1. In the Supabase dashboard, go to **Authentication → Users → Add User** (or **Invite User**) and
-   create a user with your own email + a password you choose.
-2. This automatically creates a matching row in `public.profiles` with `role = 'user'` (via the
+1. Pick a username, e.g. `admin`. Its internal email will be `admin@gameearn.local`.
+2. In the Supabase dashboard, go to **Authentication → Users → Add User**, using that constructed
+   email (`admin@gameearn.local`) and a password you choose. Turn on **Auto Confirm User** so it
+   doesn't wait on an email confirmation link that will never arrive (this address isn't real mail).
+3. This automatically creates a matching row in `public.profiles` with `role = 'user'` (via the
    trigger in `schema.sql`).
-3. Promote it to admin — in the **SQL Editor**, run:
+4. Promote it to admin **and** set its username — in the **SQL Editor**, run:
    ```sql
-   update public.profiles set role = 'admin' where email = 'you@example.com';
+   update public.profiles
+   set role = 'admin', username = 'admin'
+   where email = 'admin@gameearn.local';
    ```
-4. Log in at `/admin/login/` with that email and password.
+5. Log in at `/admin/login/` with username `admin` and the password you chose in step 2.
 
-You can repeat step 3 for any other email you want to make an admin later.
+To add another admin later, repeat with a different username (e.g. `admin2@gameearn.local`).
 
 ## 6. Environment variables
 
