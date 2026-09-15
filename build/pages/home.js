@@ -8,11 +8,10 @@ const {
   faqList,
   notePanel,
   demoBanner,
-  statCard,
   leaderboardRow,
 } = require("../components");
 const { CATEGORIES } = require("../../data/games");
-const { DEMO_LEADERBOARD, DEMO_DASHBOARD, WAYS_TO_EARN } = require("../../data/demo");
+const { DEMO_LEADERBOARD, WAYS_TO_EARN } = require("../../data/demo");
 
 const EARN_ICONS = {
   games: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8" width="18" height="10" rx="4"/><circle cx="8.5" cy="13" r="1.2"/><circle cx="16" cy="12.5" r="1"/><circle cx="18" cy="14.5" r="1"/></svg>',
@@ -104,21 +103,8 @@ function homePage(games, offers) {
 
 <section class="section" style="padding-top:0;">
   <div class="container">
-    <div class="section-head"><div><h2>Your Reward Dashboard</h2><p>A live look at your rewards once you're signed in.</p></div><a class="section-link" href="/dashboard/">Open full dashboard &rarr;</a></div>
-    ${demoBanner("Demo data shown below — sign in and connect a backend to see your real numbers.")}
-    <div class="dashboard-grid">
-      ${statCard("Total Rewards", DEMO_DASHBOARD.totalRewards, "green", DEMO_DASHBOARD.unit)}
-      ${statCard("Available", DEMO_DASHBOARD.availableRewards, "blue", DEMO_DASHBOARD.unit)}
-      ${statCard("Pending", DEMO_DASHBOARD.pendingRewards, "gold", DEMO_DASHBOARD.unit)}
-      ${statCard("Completed Tasks", DEMO_DASHBOARD.completedTasks, "violet", "tasks")}
-    </div>
-  </div>
-</section>
-
-<section class="section" style="padding-top:0;">
-  <div class="container">
     <div class="section-head"><div><h2>🏆 Top Reward Earners</h2><p>This week's leaderboard, ranked by points.</p></div><a class="section-link" href="/leaderboard/">View full leaderboard &rarr;</a></div>
-    ${demoBanner("Demo leaderboard — connects to real accounts once a backend is added.")}
+    ${demoBanner("Demo leaderboard — for illustration only.")}
     <div class="leaderboard-wrap glass">
       <table class="leaderboard-table">
         <thead><tr><th>Rank</th><th>Player</th><th>Points</th><th>Level</th></tr></thead>

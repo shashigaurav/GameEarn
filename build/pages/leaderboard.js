@@ -11,7 +11,7 @@ function leaderboardPage(entries) {
 </section>
 <section class="section" style="padding-top:0;">
   <div class="container">
-    ${demoBanner("Demo leaderboard data — real rankings will appear once accounts are connected.")}
+    ${demoBanner("Demo leaderboard data — shown for illustration only.")}
     <div class="leaderboard-wrap glass">
       <table class="leaderboard-table">
         <thead><tr><th>Rank</th><th>Player</th><th>Points</th><th>Level</th></tr></thead>

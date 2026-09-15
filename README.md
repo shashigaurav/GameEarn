@@ -31,8 +31,11 @@ open directly in a browser, but the homepage/games/category pages will not.
 
 There is exactly one authentication flow in this project: **admin login** at `/admin/login/`,
 which protects `/admin/`, `/admin/games/`, `/admin/games/add/`, and `/admin/games/edit/`. There is
-no signup, login, logout, or account system for regular visitors — `services/authService.js` is
-used only by the admin panel; public pages never import it. An "admin" is simply a row in
+no signup, login, logout, profile, dashboard, or account system for regular visitors —
+`services/authService.js` is used only by the admin panel; public pages never import it, and the
+`/profile/`, `/dashboard/`, `/referrals/`, and `/rewards/history/` pages that previously simulated
+an account system have been removed outright. The public flow is simply: browse → search → open a
+game or offer → click through to its official source — no account, ever. An "admin" is a row in
 `profiles` with `role = 'admin'` — created by you via the SQL Editor, never through a public form.
 
 ## Verify your Supabase connection

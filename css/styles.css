@@ -853,7 +853,7 @@ select.filter-select {
 
 /* ---------------- footer ---------------- */
 .site-footer { border-top: 1px solid var(--border-soft); padding: 56px 0 28px; margin-top: 40px; }
-.footer-grid { display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 32px; margin-bottom: 40px; }
+.footer-grid { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 32px; margin-bottom: 40px; }
 @media (max-width: 900px) { .footer-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } }
 .footer-grid h4 { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px; }

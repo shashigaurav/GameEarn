@@ -90,12 +90,6 @@ function header(active = "") {
       <a href="/search/" class="icon-btn" aria-label="Search GameEarn">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       </a>
-      <a href="/dashboard/" class="icon-btn desktop-only" aria-label="Notifications"><span class="dot"></span>
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
-      </a>
-      <a href="/profile/" class="icon-btn" aria-label="Profile">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6"/></svg>
-      </a>
       <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav"><span></span></button>
     </div>
   </div>
@@ -112,7 +106,7 @@ function bottomNav(active = "") {
     ["/earn/", "Earn", "earn", '<circle cx="12" cy="12" r="9"/><path d="M12 7v10M8.5 9.5c0-1.4 1.4-2.5 3.5-2.5s3.5 1 3.5 2.2c0 3-7 1.5-7 4.5 0 1.3 1.5 2.3 3.5 2.3s3.5-1 3.5-2.3"/>'],
     ["/games/", "Games", "games", '<rect x="3" y="8" width="18" height="10" rx="4"/><circle cx="8.5" cy="13" r="1.2"/><circle cx="6.5" cy="13" r="0"/><path d="M8.5 11.5v3M7 13h3"/><circle cx="16" cy="12.5" r="1"/><circle cx="18" cy="14.5" r="1"/>'],
     ["/rewards/", "Rewards", "rewards", '<path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.9 7.1 18.2l.9-5.5-4-3.9L9.5 8z"/>'],
-    ["/profile/", "Profile", "profile", '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6"/>'],
+    ["/search/", "Search", "search", '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>'],
   ];
   return `<nav class="bottom-nav" aria-label="Primary mobile">
   <ul>
@@ -148,15 +142,6 @@ function footer() {
         </ul>
       </div>
       <div>
-        <h4>Account</h4>
-        <ul>
-          <li><a href="/dashboard/">Dashboard</a></li>
-          <li><a href="/profile/">Profile</a></li>
-          <li><a href="/referrals/">Referrals</a></li>
-          <li><a href="/rewards/history/">Rewards History</a></li>
-        </ul>
-      </div>
-      <div>
         <h4>Company</h4>
         <ul>
           <li><a href="/how-it-works/">How It Works</a></li>
@@ -173,7 +158,7 @@ function footer() {
         </ul>
       </div>
     </div>
-    <p class="footer-disclaimer">GameEarn is an independent discovery and information platform. We are not affiliated with the games, apps or offer providers listed unless stated otherwise, and we do not run any gambling, betting or casino-style wagering. Reward availability, eligibility and payout terms are determined solely by each provider and can change at any time. GameEarn does not guarantee earnings, payouts or rankings, does not process payments or withdrawals, and does not host or distribute app installation files. Dashboard, leaderboard and profile figures shown on this version of the site are demo data for layout purposes only. Always review a provider's official terms before participating in any offer.</p>
+    <p class="footer-disclaimer">GameEarn is an independent discovery and information platform. We are not affiliated with the games, apps or offer providers listed unless stated otherwise, and we do not run any gambling, betting or casino-style wagering. Reward availability, eligibility and payout terms are determined solely by each provider and can change at any time. GameEarn does not guarantee earnings, payouts or rankings, does not process payments or withdrawals, and does not host or distribute app installation files. No account, signup or login is required to use GameEarn. Leaderboard figures shown on this site are for illustration only. Always review a provider's official terms before participating in any offer.</p>
     <div class="footer-bottom">
       <span>&copy; ${year} GameEarn. All rights reserved.</span>
       <span>Play. Complete. Discover rewards.</span>

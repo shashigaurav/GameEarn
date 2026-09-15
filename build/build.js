@@ -18,13 +18,7 @@ const path = require("path");
 const { layout } = require("./layout");
 const { offers } = require("../data/offers");
 const {
-  DEMO_DASHBOARD,
-  DEMO_DAILY_REWARDS,
   DEMO_LEADERBOARD,
-  DEMO_PROFILE,
-  DEMO_ACHIEVEMENTS,
-  DEMO_REFERRAL,
-  DEMO_TRANSACTIONS,
 } = require("../data/demo");
 const { SITE_URL } = require("./components");
 const { offersListingPage } = require("./pages/offers-listing");
@@ -32,15 +26,11 @@ const { offerDetailPage, offerCategoryLabel } = require("./pages/offer-detail");
 const { earnPage } = require("./pages/earn");
 const { howItWorksPage } = require("./pages/how-it-works");
 const { rewardsPage } = require("./pages/rewards");
-const { rewardsHistoryPage } = require("./pages/rewards-history");
-const { dashboardPage } = require("./pages/dashboard");
 const { leaderboardPage } = require("./pages/leaderboard");
-const { profilePage } = require("./pages/profile");
-const { referralsPage } = require("./pages/referrals");
 const { searchPage } = require("./pages/search");
 const { aboutPage, contactPage, privacyPage, termsPage, disclaimerPage, notFoundPage } = require("./pages/static");
 
-// admin panel (new)
+// admin panel (the only authentication in this project)
 const { adminLoginPage } = require("./pages/admin/login");
 const { adminDashboardPage } = require("./pages/admin/dashboard");
 const { adminGamesListPage } = require("./pages/admin/games-list");
@@ -48,7 +38,7 @@ const { gameFormPage } = require("./pages/admin/game-form");
 
 const OUT = path.join(__dirname, "..", "public");
 const NOINDEX_PATHS = new Set([
-  "/search/", "/dashboard/", "/profile/", "/referrals/", "/rewards/history/",
+  "/search/",
   "/admin/", "/admin/login/", "/admin/games/", "/admin/games/add/", "/admin/games/edit/",
 ]);
 
@@ -149,11 +139,7 @@ offers.forEach((offer) => {
 write("earn", layout({ title: "Ways To Earn on GameEarn", description: "Every path to a reward on GameEarn.", path: "/earn/", active: "earn", content: earnPage(), jsonLd: [breadcrumbLd([{ name: "Home", url: "/" }, { name: "Earn", url: "/earn/" }])] }));
 write("how-it-works", layout({ title: "How GameEarn Works", description: "See exactly how discovery, verification, offers and rewards work on GameEarn.", path: "/how-it-works/", active: "how-it-works", content: howItWorksPage(), jsonLd: [breadcrumbLd([{ name: "Home", url: "/" }, { name: "How It Works", url: "/how-it-works/" }])] }));
 write("rewards", layout({ title: "Rewards on GameEarn", description: "Learn about the reward types available on GameEarn.", path: "/rewards/", active: "rewards", content: rewardsPage(), jsonLd: [breadcrumbLd([{ name: "Home", url: "/" }, { name: "Rewards", url: "/rewards/" }])] }));
-write("rewards/history", layout({ title: "Rewards History | GameEarn", description: "A demo record of points earned and redeemed on a GameEarn account.", path: "/rewards/history/", active: "rewards", noindex: true, content: rewardsHistoryPage(DEMO_TRANSACTIONS) }));
-write("dashboard", layout({ title: "Your Reward Dashboard | GameEarn", description: "Track your total rewards, streak and completed tasks on GameEarn.", path: "/dashboard/", active: "rewards", noindex: true, content: dashboardPage(DEMO_DASHBOARD, DEMO_DAILY_REWARDS) }));
 write("leaderboard", layout({ title: "Top Reward Earners Leaderboard | GameEarn", description: "See the top reward earners on GameEarn this season.", path: "/leaderboard/", active: "leaderboard", content: leaderboardPage(DEMO_LEADERBOARD), jsonLd: [breadcrumbLd([{ name: "Home", url: "/" }, { name: "Leaderboard", url: "/leaderboard/" }])] }));
-write("profile", layout({ title: "Your Profile | GameEarn", description: "View your GameEarn profile, achievements and streak.", path: "/profile/", active: "profile", noindex: true, content: profilePage(DEMO_PROFILE, DEMO_ACHIEVEMENTS) }));
-write("referrals", layout({ title: "Invite Friends & Earn Rewards | GameEarn", description: "Get your GameEarn referral code.", path: "/referrals/", active: "rewards", noindex: true, content: referralsPage(DEMO_REFERRAL) }));
 
 /* ---------------- search (offers embedded; games fetched live) ---------------- */
 write("search", layout({ title: "Search Games, Offers & Rewards | GameEarn", description: "Search GameEarn's full catalog of games and reward offers.", path: "/search/", noindex: true, content: searchPage(offers) }));
@@ -179,10 +165,6 @@ fs.writeFileSync(path.join(OUT, "404.html"), layout({ title: "Page Not Found | G
 const robots = `User-agent: *
 Allow: /
 Disallow: /search/
-Disallow: /dashboard/
-Disallow: /profile/
-Disallow: /referrals/
-Disallow: /rewards/history/
 Disallow: /admin/
 
 Sitemap: ${SITE_URL}/sitemap.xml
