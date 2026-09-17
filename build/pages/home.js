@@ -1,33 +1,16 @@
 const {
   gameCard,
-  offerCard,
   categoryCard,
-  featureCard,
-  earnCard,
   trustCard,
   faqList,
   notePanel,
-  demoBanner,
-  leaderboardRow,
 } = require("../components");
 const { CATEGORIES } = require("../../data/games");
-const { DEMO_LEADERBOARD, WAYS_TO_EARN } = require("../../data/demo");
 
-const EARN_ICONS = {
-  games: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8" width="18" height="10" rx="4"/><circle cx="8.5" cy="13" r="1.2"/><circle cx="16" cy="12.5" r="1"/><circle cx="18" cy="14.5" r="1"/></svg>',
-  tasks: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l2 2 4-4"/><rect x="4" y="4" width="16" height="16" rx="4"/></svg>',
-  surveys: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
-  "app-offers": '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M10 18h4"/></svg>',
-  cashback: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 9.5c0-1.2 1.3-2 3-2s3 .9 3 2.1c0 2.7-6 1.3-6 4 0 1.2 1.3 2.1 3 2.1s3-.9 3-2.1"/></svg>',
-  referral: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M2.5 20c0-3.3 2.5-6 5.5-6s5.5 2.7 5.5 6M14.5 14.5c2.6.2 4.5 2.5 4.5 5.5"/></svg>',
-  daily: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.9 7.1 18.2l.9-5.5-4-3.9L9.5 8z"/></svg>',
-  quizzes: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.7-2.5 1.8-2.5 3.5M12 17h.01"/></svg>',
-};
-
-function homePage(games, offers) {
-  const featuredOffers = offers.filter((o) => o.featured).slice(0, 6);
+function homePage(games) {
   const popularGames = [...games].sort((a, b) => b.rating - a.rating).slice(0, 8);
-  const topLeaders = DEMO_LEADERBOARD.slice(0, 5);
+  const trendingGames = games.filter((g) => g.trending).slice(0, 3);
+  const newGames = [...games].filter((g) => g.newRelease).slice(0, 4);
 
   const catCounts = CATEGORIES.map((c) => ({ ...c, count: games.filter((g) => g.category === c.slug).length }));
 
@@ -35,47 +18,35 @@ function homePage(games, offers) {
 <section class="hero">
   <div class="container">
     <div class="hero-copy">
-      <span class="eyebrow-tag"><span class="dot"></span> Verified games, tasks &amp; reward opportunities</span>
-      <h1>Play. Complete. <span class="accent">Earn Rewards.</span></h1>
-      <p class="lede">Discover verified games, tasks and reward opportunities in one place.</p>
+      <span class="eyebrow-tag"><span class="dot"></span> A daily-updated shelf of mobile games</span>
+      <h1>Discover Games <span class="accent">Worth Playing.</span></h1>
+      <p class="lede">Browse, search and filter mobile games across every genre — then head straight to the official source to download.</p>
       <div class="hero-actions">
-        <a href="/earn/" class="btn btn-primary">Start Earning</a>
-        <a href="/games/" class="btn btn-ghost">Explore Games</a>
+        <a href="/games/" class="btn btn-primary">Explore Games</a>
+        <a href="/trending/" class="btn btn-ghost">See What's Trending</a>
       </div>
-      <p class="hero-disclaimer">Reward availability varies by app, region and eligibility. GameEarn does not guarantee income — always check a provider's official terms.</p>
+      <p class="hero-disclaimer">Any reward information shown on a game page is descriptive only and set by that game's developer — GameEarn does not guarantee earnings.</p>
       <div class="hero-stats">
-        <div class="stat"><b>${games.length + offers.length}+</b><span>Games &amp; offers listed</span></div>
-        <div class="stat"><b>${offers.filter((o) => o.verified).length}</b><span>Verified opportunities</span></div>
+        <div class="stat"><b>${games.length}+</b><span>Games listed</span></div>
         <div class="stat"><b>${CATEGORIES.length}</b><span>Categories</span></div>
+        <div class="stat"><b>${newGames.length}</b><span>New this week</span></div>
       </div>
     </div>
     <div class="hero-visual" aria-hidden="true">
       <div class="hero-orb"></div>
       <div class="hero-card-stack">
         <div class="floating-card glass card-1">
-          <div class="fc-top"><img src="${featuredOffers[0]?.icon || "/assets/offers/dailyquest-app-install-icon.svg"}" alt="" /><div><div class="fc-name">${featuredOffers[0]?.title.slice(0, 22) || "DailyQuest"}</div><div class="fc-meta">${featuredOffers[0]?.rewardRange || "Verified offer"}</div></div></div>
+          <div class="fc-top"><img src="${popularGames[0]?.icon}" alt="" /><div><div class="fc-name">${popularGames[0]?.name}</div><div class="fc-meta">${popularGames[0]?.rating.toFixed(1)}★ &middot; ${popularGames[0]?.genre}</div></div></div>
         </div>
         <div class="floating-card glass card-2">
-          <div class="fc-top"><img src="${popularGames[0]?.icon}" alt="" /><div><div class="fc-name">${popularGames[0]?.name}</div><div class="fc-meta">${popularGames[0]?.rating.toFixed(1)}★ &middot; ${popularGames[0]?.rewardType}</div></div></div>
+          <div class="fc-top"><img src="${popularGames[1]?.icon}" alt="" /><div><div class="fc-name">${popularGames[1]?.name}</div><div class="fc-meta">${popularGames[1]?.rating.toFixed(1)}★ &middot; ${popularGames[1]?.genre}</div></div></div>
         </div>
         <div class="floating-card glass card-3">
-          <div class="fc-top"><img src="${featuredOffers[1]?.icon || "/assets/offers/fittrack-7-day-trial-icon.svg"}" alt="" /><div><div class="fc-name">${featuredOffers[1]?.title.slice(0, 22) || "FitTrack Challenge"}</div><div class="fc-meta">${featuredOffers[1]?.rewardRange || "Verified offer"}</div></div></div>
+          <div class="fc-top"><img src="${popularGames[2]?.icon}" alt="" /><div><div class="fc-name">${popularGames[2]?.name}</div><div class="fc-meta">${popularGames[2]?.rating.toFixed(1)}★ &middot; ${popularGames[2]?.genre}</div></div></div>
         </div>
-        <div class="floating-coin c1">pts</div>
-        <div class="floating-coin c2">+30</div>
+        <div class="floating-coin c1">★</div>
+        <div class="floating-coin c2">New</div>
       </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" style="padding-top:0;">
-  <div class="container">
-    <div class="section-head">
-      <div><h2>🔥 Featured Opportunities</h2><p>Verified tasks, surveys and app offers worth checking out this week.</p></div>
-      <a class="section-link" href="/offers/">View all offers &rarr;</a>
-    </div>
-    <div class="grid grid-6">
-      ${featuredOffers.map(offerCard).join("\n")}
     </div>
   </div>
 </section>
@@ -92,27 +63,21 @@ function homePage(games, offers) {
   </div>
 </section>
 
-<section class="section" style="padding-top:0;">
+${
+  trendingGames.length
+    ? `<section class="section" style="padding-top:0;">
   <div class="container">
-    <div class="section-head"><div><h2>💰 Ways To Earn</h2><p>Every path to a reward on GameEarn, in one place.</p></div></div>
-    <div class="grid grid-8">
-      ${WAYS_TO_EARN.map((w) => earnCard(EARN_ICONS[w.key], w.title, w.desc, w.href, w.cta)).join("\n")}
+    <div class="section-head">
+      <div><h2>🔥 Trending Now</h2><p>What players are checking out this week.</p></div>
+      <a class="section-link" href="/trending/">See full trending list &rarr;</a>
+    </div>
+    <div class="grid">
+      ${trendingGames.map((g) => gameCard(g)).join("\n")}
     </div>
   </div>
-</section>
-
-<section class="section" style="padding-top:0;">
-  <div class="container">
-    <div class="section-head"><div><h2>🏆 Top Reward Earners</h2><p>This week's leaderboard, ranked by points.</p></div><a class="section-link" href="/leaderboard/">View full leaderboard &rarr;</a></div>
-    ${demoBanner("Demo leaderboard — for illustration only.")}
-    <div class="leaderboard-wrap glass">
-      <table class="leaderboard-table">
-        <thead><tr><th>Rank</th><th>Player</th><th>Points</th><th>Level</th></tr></thead>
-        <tbody>${topLeaders.map(leaderboardRow).join("")}</tbody>
-      </table>
-    </div>
-  </div>
-</section>
+</section>`
+    : ""
+}
 
 <section class="section" style="padding-top:0;">
   <div class="container">
@@ -125,27 +90,25 @@ function homePage(games, offers) {
 
 <section class="section" style="padding-top:0;">
   <div class="container">
-    <div class="section-head"><div><h2>Why GameEarn?</h2><p>Built on transparency, not promises.</p></div></div>
+    <div class="section-head"><div><h2>Why GameEarn?</h2><p>Built for finding games quickly, without the clutter.</p></div></div>
     <div class="grid">
-      ${trustCard('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>', "Verified Opportunities", "Offers are reviewed and marked with a trust score before they're featured.")}
-      ${trustCard('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12h8M8 16h5"/></svg>', "Transparent Reward Terms", "Every listing shows reward range, eligibility and requirements up front.")}
-      ${trustCard('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>', "No Hidden Fees", "GameEarn never charges to browse, discover or start an offer.")}
-      ${trustCard('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>', "Clear Eligibility", "Region, device and account requirements are listed on every offer page.")}
-      ${trustCard('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 018 0v2"/></svg>', "Provider Information", "We name the actual provider behind every game and offer, not just GameEarn.")}
-      ${trustCard('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>', "Last Verified Date", "Every offer shows the date its terms were last checked.")}
+      ${trustCard('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>', "Curated Listings", "Every game shown here has a full details page — genre, rating, platform, size and more.")}
+      ${trustCard('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>', "No Hidden Fees", "GameEarn never charges to browse, search or discover a game.")}
+      ${trustCard('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 018 0v2"/></svg>', "Straight to the Source", "Every download button links directly to the game's official page — nothing hosted here.")}
+      ${trustCard('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>', "Fresh Additions", "New games and trending titles are added and refreshed regularly.")}
     </div>
   </div>
 </section>
 
 <section class="section" style="padding-top:0;">
   <div class="container">
-    <div class="section-head"><div><h2>How It Works</h2><p>GameEarn helps you discover and verify — the reward itself comes from the provider.</p></div><a class="section-link" href="/how-it-works/">Full walkthrough &rarr;</a></div>
+    <div class="section-head"><div><h2>How It Works</h2><p>Three steps between you and your next game.</p></div></div>
     <div class="steps">
-      <div class="step glass"><span class="step-num">1</span><h3>Discover</h3><p>Browse games, tasks, surveys, app offers and cashback deals in one place.</p></div>
-      <div class="step glass"><span class="step-num">2</span><h3>Check Details</h3><p>Review reward range, eligibility, requirements and trust score before you start.</p></div>
-      <div class="step glass"><span class="step-num">3</span><h3>Complete &amp; Track</h3><p>Complete the offer with its provider, then track progress in your dashboard.</p></div>
+      <div class="step glass"><span class="step-num">1</span><h3>Browse or Search</h3><p>Explore by category, check what's trending, or search for a game by name.</p></div>
+      <div class="step glass"><span class="step-num">2</span><h3>Check the Details</h3><p>Every game page shows genre, rating, platform, size, screenshots and more.</p></div>
+      <div class="step glass"><span class="step-num">3</span><h3>Download or Play</h3><p>Click through to the game's official source — no account or sign-in needed.</p></div>
     </div>
-    ${notePanel("GameEarn helps you discover and evaluate opportunities. Rewards, eligibility and payout terms are controlled entirely by each game or offer provider, not by GameEarn.")}
+    ${notePanel("GameEarn is a discovery platform. It doesn't develop, publish or host the games listed — clicking through takes you straight to the developer's own page.")}
   </div>
 </section>
 
@@ -153,11 +116,10 @@ function homePage(games, offers) {
   <div class="container">
     <div class="section-head"><div><h2>Frequently Asked Questions</h2></div></div>
     ${faqList([
-      { q: "What is GameEarn?", a: "GameEarn is a discovery platform that helps you find verified games, tasks, surveys, app offers and cashback deals, and understand their reward terms before you start." },
-      { q: "Are rewards guaranteed?", a: "No. Reward availability varies by provider, region and eligibility. GameEarn does not guarantee earnings, payouts or rankings." },
-      { q: "Does GameEarn involve betting or gambling?", a: "No. GameEarn does not offer betting, gambling, casino wagering, deposits or real-money gaming of any kind." },
-      { q: "Is the dashboard data real?", a: "Not yet on this version of the site — dashboard, leaderboard and profile numbers are clearly marked demo data until a backend and accounts are connected." },
-      { q: "How do I start earning?", a: "Browse Games or Offers, check an item's details and requirements, then use the official CTA to start it with the provider directly." },
+      { q: "What is GameEarn?", a: "GameEarn is a discovery platform that helps you find mobile games by genre, rating and platform, then takes you straight to the official source to download." },
+      { q: "Do I need an account?", a: "No. GameEarn requires no signup or login to browse, search or open any game's details." },
+      { q: "Where do downloads happen?", a: "GameEarn doesn't host any files. Every download button links directly to the game's own official page." },
+      { q: "How often are new games added?", a: "New and trending titles are refreshed regularly — check the New and Trending pages for the latest additions." },
     ])}
   </div>
 </section>
@@ -165,11 +127,11 @@ function homePage(games, offers) {
 <section class="section" style="padding-top:0;">
   <div class="container">
     <div class="cta-banner glass">
-      <h2>Ready to start discovering rewards?</h2>
-      <p>Browse verified games and offers, check the details, and head to the official source when you're ready.</p>
+      <h2>Ready to find your next game?</h2>
+      <p>Browse the full catalog or jump straight into what's trending this week.</p>
       <div class="hero-actions">
         <a href="/games/" class="btn btn-primary">Explore Games</a>
-        <a href="/offers/" class="btn btn-outline-blue">Browse Offers</a>
+        <a href="/search/" class="btn btn-outline-blue">Search Games</a>
       </div>
     </div>
   </div>

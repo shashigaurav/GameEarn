@@ -82,7 +82,6 @@
     var cards = Array.prototype.slice.call(grid.querySelectorAll(config.cardSelector));
     var pageSize = parseInt(grid.getAttribute("data-page-size"), 10) || 12;
     var visibleCount = pageSize;
-    var activePill = "all";
 
     var searchInput = document.getElementById(config.searchId);
     var selects = (config.selectIds || []).map(function (id) { return document.getElementById(id); });
@@ -90,7 +89,6 @@
     var emptyState = document.getElementById(config.emptyStateId);
     var loadMoreWrap = document.getElementById(config.loadMoreWrapId);
     var loadMoreBtn = document.getElementById(config.loadMoreBtnId);
-    var pillsWrap = config.pillsId ? document.getElementById(config.pillsId) : null;
 
     function matches(card) {
       var q = (searchInput && searchInput.value.trim().toLowerCase()) || "";
@@ -108,9 +106,6 @@
           return false;
         }
       }
-      if (activePill === "nocost" && card.dataset.nocost !== "true") return false;
-      if (activePill === "easy" && card.dataset.difficulty !== "easy") return false;
-      if (["tasks", "surveys", "app-offers", "cashback"].indexOf(activePill) !== -1 && card.dataset.category !== activePill) return false;
       return true;
     }
 
@@ -120,7 +115,6 @@
       return list.slice().sort(function (a, b) {
         if (mode === "rating") return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
         if (mode === "newest") return new Date(b.dataset.date) - new Date(a.dataset.date);
-        if (mode === "reward") return (parseFloat(b.dataset.rewardvalue) || 0) - (parseFloat(a.dataset.rewardvalue) || 0);
         var pa = a.dataset.popular === "true" || a.dataset.trending === "true" ? 1 : 0;
         var pb = b.dataset.popular === "true" || b.dataset.trending === "true" ? 1 : 0;
         if (pb !== pa) return pb - pa;
@@ -151,18 +145,6 @@
 
     if (loadMoreBtn) loadMoreBtn.addEventListener("click", function () { visibleCount += pageSize; render(); });
 
-    if (pillsWrap) {
-      pillsWrap.querySelectorAll(".filter-pill").forEach(function (pill) {
-        pill.addEventListener("click", function () {
-          pillsWrap.querySelectorAll(".filter-pill").forEach(function (p) { p.classList.remove("active"); });
-          pill.classList.add("active");
-          activePill = pill.getAttribute("data-pill");
-          visibleCount = pageSize;
-          render();
-        });
-      });
-    }
-
     render();
   }
 
@@ -179,22 +161,6 @@
     emptyStateId: "emptyState",
     loadMoreWrapId: "loadMoreWrap",
     loadMoreBtnId: "loadMoreBtn",
-  });
-
-  // offers grid (/offers/)
-  wireGrid({
-    gridId: "offerGrid",
-    cardSelector: ".offer-card",
-    searchId: "offerSearch",
-    searchFields: ["name", "provider", "category"],
-    selectIds: ["offerCategoryFilter", "offerDifficultyFilter"],
-    selectFields: ["category", "difficulty"],
-    sortId: "offerSort",
-    resultCountId: "offerResultCount",
-    emptyStateId: "offerEmptyState",
-    loadMoreWrapId: "offerLoadMoreWrap",
-    loadMoreBtnId: "offerLoadMoreBtn",
-    pillsId: "offerPills",
   });
 
 })();

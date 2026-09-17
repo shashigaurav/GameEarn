@@ -4,8 +4,8 @@
   "private": true,
   "description": "GameEarn — static discovery site with Supabase-backed games catalog and admin panel.",
   "scripts": {
-    "build": "node build/generate-assets.js && node build/generate-offer-assets.js && node build/build.js",
-    "generate:assets": "node build/generate-assets.js && node build/generate-offer-assets.js"
+    "build": "node build/generate-assets.js && node build/build.js",
+    "generate:assets": "node build/generate-assets.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0"

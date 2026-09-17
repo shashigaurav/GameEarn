@@ -9,24 +9,14 @@
 // data straight from Supabase. That's what makes "no rebuild after an
 // admin edit" possible on a statically-hosted project.
 //
-// Everything else on the site (offers, legal pages, the demo dashboard/
-// leaderboard/profile/referrals from the previous redesign, and the new
-// real admin panel UI) is unchanged in spirit: still pre-rendered once,
-// right here, from local data files.
+// Everything else on the site (legal pages and the admin panel UI) is
+// unchanged in spirit: still pre-rendered once, right here, from local data
+// files. GameEarn is a pure games-discovery site — no offers, earn hub,
+// rewards explainer, or leaderboard.
 const fs = require("fs");
 const path = require("path");
 const { layout } = require("./layout");
-const { offers } = require("../data/offers");
-const {
-  DEMO_LEADERBOARD,
-} = require("../data/demo");
 const { SITE_URL } = require("./components");
-const { offersListingPage } = require("./pages/offers-listing");
-const { offerDetailPage, offerCategoryLabel } = require("./pages/offer-detail");
-const { earnPage } = require("./pages/earn");
-const { howItWorksPage } = require("./pages/how-it-works");
-const { rewardsPage } = require("./pages/rewards");
-const { leaderboardPage } = require("./pages/leaderboard");
 const { searchPage } = require("./pages/search");
 const { aboutPage, contactPage, privacyPage, termsPage, disclaimerPage, notFoundPage } = require("./pages/static");
 
@@ -92,57 +82,8 @@ if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) {
   );
 }
 
-/* ---------------- offers ---------------- */
-write(
-  "offers",
-  layout({
-    title: "Explore Verified Offers - Tasks, Surveys, App Offers & Cashback | GameEarn",
-    description: "Browse verified tasks, surveys, app offers and cashback deals on GameEarn. Filter by category, difficulty and reward, and check each provider's trust score before you start.",
-    path: "/offers/",
-    active: "offers",
-    content: offersListingPage(offers),
-    jsonLd: [breadcrumbLd([{ name: "Home", url: "/" }, { name: "Offers", url: "/offers/" }])],
-  })
-);
-
-offers.forEach((offer) => {
-  const related = offers.filter((o) => o.slug !== offer.slug && o.category === offer.category).slice(0, 4).concat(
-    offers.filter((o) => o.slug !== offer.slug && o.category !== offer.category)
-  ).slice(0, 4);
-
-  write(
-    `offer/${offer.slug}`,
-    layout({
-      title: `${offer.title} - Reward, Terms & Details | GameEarn`,
-      description: `See the reward range, eligibility, requirements and trust score for ${offer.title} from ${offer.provider} on GameEarn.`,
-      path: `/offer/${offer.slug}/`,
-      ogImage: offer.image,
-      active: "offers",
-      content: offerDetailPage(offer, related),
-      jsonLd: [
-        breadcrumbLd([{ name: "Home", url: "/" }, { name: "Offers", url: "/offers/" }, { name: offer.title, url: `/offer/${offer.slug}/` }]),
-        {
-          "@context": "https://schema.org",
-          "@type": "Offer",
-          name: offer.title,
-          description: offer.description,
-          category: offerCategoryLabel(offer.category),
-          seller: { "@type": "Organization", name: offer.provider },
-          image: `${SITE_URL}${offer.image}`,
-        },
-      ],
-    })
-  );
-});
-
-/* ---------------- earn / how-it-works / rewards ---------------- */
-write("earn", layout({ title: "Ways To Earn on GameEarn", description: "Every path to a reward on GameEarn.", path: "/earn/", active: "earn", content: earnPage(), jsonLd: [breadcrumbLd([{ name: "Home", url: "/" }, { name: "Earn", url: "/earn/" }])] }));
-write("how-it-works", layout({ title: "How GameEarn Works", description: "See exactly how discovery, verification, offers and rewards work on GameEarn.", path: "/how-it-works/", active: "how-it-works", content: howItWorksPage(), jsonLd: [breadcrumbLd([{ name: "Home", url: "/" }, { name: "How It Works", url: "/how-it-works/" }])] }));
-write("rewards", layout({ title: "Rewards on GameEarn", description: "Learn about the reward types available on GameEarn.", path: "/rewards/", active: "rewards", content: rewardsPage(), jsonLd: [breadcrumbLd([{ name: "Home", url: "/" }, { name: "Rewards", url: "/rewards/" }])] }));
-write("leaderboard", layout({ title: "Top Reward Earners Leaderboard | GameEarn", description: "See the top reward earners on GameEarn this season.", path: "/leaderboard/", active: "leaderboard", content: leaderboardPage(DEMO_LEADERBOARD), jsonLd: [breadcrumbLd([{ name: "Home", url: "/" }, { name: "Leaderboard", url: "/leaderboard/" }])] }));
-
-/* ---------------- search (offers embedded; games fetched live) ---------------- */
-write("search", layout({ title: "Search Games, Offers & Rewards | GameEarn", description: "Search GameEarn's full catalog of games and reward offers.", path: "/search/", noindex: true, content: searchPage(offers) }));
+/* ---------------- search (games fetched live client-side) ---------------- */
+write("search", layout({ title: "Search Games | GameEarn", description: "Search GameEarn's full games catalog by name, genre, developer or platform.", path: "/search/", noindex: true, content: searchPage() }));
 
 /* ---------------- static/legal pages ---------------- */
 write("about", layout({ title: "About GameEarn - Our Discovery Platform", description: "Learn what GameEarn is and how it works.", path: "/about/", content: aboutPage() }));

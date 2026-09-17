@@ -1,11 +1,9 @@
 // api/home.js
-// Renders "/" at request time. Everything except the games catalog is unchanged
-// from the static build: offers/demo data still come from their local data files,
-// only `games` is now fetched live from Supabase (published rows only).
+// Renders "/" at request time, reading the live `games` catalog from Supabase
+// (published rows only). GameEarn is a pure games-discovery site.
 const { layout } = require("../build/layout");
 const { homePage } = require("../build/pages/home");
 const { getPublishedGames } = require("../lib/gameQueries");
-const { offers } = require("../data/offers");
 const { SITE_NAME, SITE_URL } = require("../build/components");
 const { errorPage } = require("../lib/errorPage");
 
@@ -14,12 +12,12 @@ module.exports = async function handler(req, res) {
     const games = await getPublishedGames();
 
     const html = layout({
-      title: "GameEarn - Play Games, Complete Offers & Discover Rewards",
+      title: "GameEarn - Discover Mobile Games",
       description:
-        "Discover verified games, tasks, surveys, app offers and cashback deals in one place. GameEarn helps you compare reward opportunities before you start — no betting, no gambling.",
+        "Browse, search and filter mobile games across every genre. GameEarn links straight to each game's official source — no account needed.",
       path: "/",
       active: "home",
-      content: homePage(games, offers),
+      content: homePage(games),
       jsonLd: [
         { "@context": "https://schema.org", "@type": "Organization", name: SITE_NAME, url: SITE_URL, logo: `${SITE_URL}/assets/favicon.svg` },
         {

@@ -1,27 +1,26 @@
 # GameEarn
 
-A dark, glassmorphism gaming/rewards discovery platform. The **games catalog is backed by
-Supabase** (Postgres + Auth + Storage + RLS) with a secure admin panel for managing it. There is
-**no public user-account system** — visitors browse, search and open games without logging in.
-The only authentication in this project is **admin authentication**, gating `/admin/*`.
+A pure games-discovery site. The **games catalog is backed by Supabase** (Postgres + Auth +
+Storage + RLS) with a secure admin panel for managing it. There is **no public user-account
+system** — visitors browse, search and open games without logging in. The only authentication in
+this project is **admin authentication**, gating `/admin/*`.
 
 ## Architecture (read this first if you're extending the project)
 
 This project has **no client-side JS framework and no bundler** — pages are either:
 
 1. **Pre-rendered static HTML** (built once by `node build/build.js`, output to `/public`) — used
-   for pages that don't depend on live game data: offers, legal pages, the demo dashboard/
-   leaderboard/profile/referrals, and the admin panel's UI shells.
+   for pages that don't depend on live game data: legal pages and the admin panel's UI shells.
 2. **Vercel serverless functions** under `/api` — used for every page that must reflect the live
-   `games` table without a rebuild: the homepage's game sections, `/games/`, `/games/<slug>/`,
+   `games` table without a rebuild: the homepage, `/games/`, `/games/<slug>/`,
    `/category/*`, `/trending/`, `/new-games/`, `/earning-games/`, and `/sitemap.xml`. `vercel.json`
    rewrites the clean URLs to these functions. They query Supabase with the **public anon key**
    only — the same key the browser uses — because every read they do is already allowed for
    anonymous users under RLS (published games only).
-3. **Client-side Supabase calls** — the admin panel (`/admin/...`) and the games portion of
-   `/search/` talk to Supabase directly from the browser using `@supabase/supabase-js` (loaded
-   via `esm.sh`, no bundler needed) and the anon key. Security here is enforced by **Row Level
-   Security**, not by hiding pages — see `supabase/schema.sql`.
+3. **Client-side Supabase calls** — the admin panel (`/admin/...`) and `/search/` talk to Supabase
+   directly from the browser using `@supabase/supabase-js` (loaded via `esm.sh`, no bundler
+   needed) and the anon key. Security here is enforced by **Row Level Security**, not by hiding
+   pages — see `supabase/schema.sql`.
 
 Because of #2, **local preview now needs `vercel dev`** (which runs the serverless functions and
 honors `vercel.json`) rather than just opening `public/index.html`. Static-only pages will still
@@ -32,11 +31,13 @@ open directly in a browser, but the homepage/games/category pages will not.
 There is exactly one authentication flow in this project: **admin login** at `/admin/login/`,
 which protects `/admin/`, `/admin/games/`, `/admin/games/add/`, and `/admin/games/edit/`. There is
 no signup, login, logout, profile, dashboard, or account system for regular visitors —
-`services/authService.js` is used only by the admin panel; public pages never import it, and the
-`/profile/`, `/dashboard/`, `/referrals/`, and `/rewards/history/` pages that previously simulated
-an account system have been removed outright. The public flow is simply: browse → search → open a
-game or offer → click through to its official source — no account, ever. An "admin" is a row in
-`profiles` with `role = 'admin'` — created by you via the SQL Editor, never through a public form.
+`services/authService.js` is used only by the admin panel; public pages never import it. The
+public flow is simply: browse → search → open a game → click through to its official source — no
+account, ever. An "admin" is a row in `profiles` with `role = 'admin'` — created by you via the
+SQL Editor, never through a public form.
+
+Public navigation is kept deliberately simple: **Home, Games, Categories, Trending, New,
+Search** — nothing else.
 
 ## Verify your Supabase connection
 
@@ -179,10 +180,9 @@ environment variables at build time.
 ## Project structure
 
 ```
-data/games.js, data/offers.js, data/demo.js   Local data (offers/demo unchanged; games.js is
-                                                now only used for the CATEGORIES/PLATFORMS/
-                                                REWARD_TYPES reference lists and as the source
-                                                for supabase/seed.sql — not for live game data)
+data/games.js                                  Reference lists only now (CATEGORIES, PLATFORMS,
+                                                REWARD_TYPES) and the source for
+                                                supabase/seed.sql — not live game data
 supabase/schema.sql                            Tables, indexes, RLS policies, storage bucket
 supabase/seed.sql                              28 games seeded from the existing catalog
 lib/supabaseServer.js                          Server-side Supabase client (anon key only)
@@ -198,7 +198,7 @@ services/gameService.js                        Client-side CRUD + storage upload
 services/authService.js                        Client-side auth wrapper (sign in/out, role check)
 js/admin/auth-guard.js, login.js,               Per-page admin glue (imports the services above)
     dashboard.js, games-list.js, game-form.js
-js/search-live.js                              Live game search (offers stay static)
+js/search-live.js                              Live game search
 build/pages/admin/*.js                          Admin panel page templates (static shells)
 vercel.json                                     Rewrites + build/output config
 package.json                                    Only dependency: @supabase/supabase-js
@@ -209,7 +209,8 @@ package.json                                    Only dependency: @supabase/supab
 
 **Visitor:** homepage loads with live games, `/games/` and category pages filter live data,
 `/games/<slug>/` loads by slug (404s cleanly for a bad/draft slug), draft games never appear on
-the public site or in the sitemap, `/search/` finds live games + static offers.
+the public site or in the sitemap, `/search/` finds live games. Public nav is exactly Home, Games,
+Categories, Trending, New, Search — nothing else.
 
 **Admin:** `/admin/login/` signs in and rejects non-admin accounts; `/admin/` shows live
 counts; Add/Edit Game create and update rows (with image upload to `game-assets`); Delete asks for

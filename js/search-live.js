@@ -1,8 +1,7 @@
 // js/search-live.js
 import { supabase, isConfigured } from "../lib/supabaseClient.js";
 
-const datasetEl = document.getElementById("site-dataset");
-let dataset = datasetEl ? JSON.parse(datasetEl.textContent) : []; // offers, embedded at build time
+let dataset = [];
 
 const input = document.getElementById("siteSearchInput");
 const resultsEl = document.getElementById("searchResults");
@@ -17,11 +16,9 @@ function esc(str = "") {
 }
 
 function cardHtml(item) {
-  const href = item.type === "offer" ? `/offer/${item.slug}/` : `/games/${item.slug}/`;
-  const freeBadge = item.freeToPlay
-    ? `<span class="badge badge-free">${item.type === "offer" ? "No Cost" : "Free to Play"}</span>`
-    : '<span class="badge">Paid</span>';
-  const rewardBadge = item.rewardType ? `<span class="badge badge-reward">${esc(item.rewardType)}</span>` : "";
+  const href = `/games/${item.slug}/`;
+  const freeBadge = item.freeToPlay ? '<span class="badge badge-free">Free to Play</span>' : '<span class="badge">Paid</span>';
+  const rewardBadge = item.rewardType && item.rewardType !== "None" ? `<span class="badge badge-reward">${esc(item.rewardType)}</span>` : "";
   const desc = item.description && item.description.length > 96 ? item.description.slice(0, 96) + "…" : item.description || "";
   return `<article class="game-card">
     <a href="${href}" class="thumb-wrap"><img src="${item.image}" alt="${esc(item.name)} cover" loading="lazy" width="640" height="320" />
@@ -51,8 +48,7 @@ function runSearch() {
       item.name.toLowerCase().includes(q) ||
       item.category.toLowerCase().includes(q) ||
       (item.genre || "").toLowerCase().includes(q) ||
-      (item.developer || "").toLowerCase().includes(q) ||
-      String(item.rewardType || "").toLowerCase().includes(q)
+      (item.developer || "").toLowerCase().includes(q)
   );
   resultsEl.innerHTML = results.map(cardHtml).join("");
   countEl.textContent = `${results.length} result${results.length === 1 ? "" : "s"} for "${input ? input.value : ""}"`;
@@ -71,8 +67,7 @@ async function loadLiveGames() {
       .eq("status", "published");
     if (error) throw error;
 
-    const games = (data || []).map((g) => ({
-      type: "game",
+    dataset = (data || []).map((g) => ({
       name: g.name,
       slug: g.slug,
       category: g.category,
@@ -87,8 +82,6 @@ async function loadLiveGames() {
       icon: g.icon_url,
       newRelease: g.new_release,
     }));
-
-    dataset = [...games, ...dataset];
   } catch (err) {
     console.error("Live game search failed to load:", err);
   } finally {

@@ -1,20 +1,14 @@
 const { getPublishedGames } = require("../lib/gameQueries");
 const { SITE_URL } = require("../build/components");
 const { CATEGORIES } = require("../data/games");
-const { offers } = require("../data/offers");
 
 const STATIC_PATHS = [
   "/",
-  "/earn/",
   "/games/",
   "/earning-games/",
   "/trending/",
   "/new-games/",
   "/category/",
-  "/offers/",
-  "/rewards/",
-  "/leaderboard/",
-  "/how-it-works/",
   "/about/",
   "/contact/",
   "/privacy-policy/",
@@ -30,7 +24,6 @@ module.exports = async function handler(req, res) {
       ...STATIC_PATHS,
       ...CATEGORIES.map((c) => `/category/${c.slug}/`),
       ...games.map((g) => `/games/${g.slug}/`),
-      ...offers.map((o) => `/offer/${o.slug}/`),
     ];
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
