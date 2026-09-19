@@ -19,16 +19,20 @@ const STATIC_PATHS = [
 module.exports = async function handler(req, res) {
   try {
     const games = await getPublishedGames();
+    const now = new Date().toISOString().slice(0, 10);
 
-    const urls = [
-      ...STATIC_PATHS,
-      ...CATEGORIES.map((c) => `/category/${c.slug}/`),
-      ...games.map((g) => `/games/${g.slug}/`),
+    const urlEntries = [
+      ...STATIC_PATHS.map((u) => ({ loc: u, lastmod: now })),
+      ...CATEGORIES.map((c) => ({ loc: `/category/${c.slug}/`, lastmod: now })),
+      ...games.map((g) => ({
+        loc: `/games/${g.slug}/`,
+        lastmod: g.updatedAt ? new Date(g.updatedAt).toISOString().slice(0, 10) : now,
+      })),
     ];
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map((u) => `  <url><loc>${SITE_URL}${u}</loc></url>`).join("\n")}
+${urlEntries.map((u) => `  <url><loc>${SITE_URL}${u.loc}</loc><lastmod>${u.lastmod}</lastmod></url>`).join("\n")}
 </urlset>`;
 
     res.setHeader("Content-Type", "application/xml; charset=utf-8");

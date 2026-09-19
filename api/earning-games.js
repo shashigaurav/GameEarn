@@ -2,6 +2,7 @@ const { layout } = require("../build/layout");
 const { listingPage } = require("../build/pages/listing");
 const { getPublishedGames } = require("../lib/gameQueries");
 const { errorPage } = require("../lib/errorPage");
+const { breadcrumbLd, itemListLd } = require("../lib/seo");
 
 module.exports = async function handler(req, res) {
   try {
@@ -10,7 +11,7 @@ module.exports = async function handler(req, res) {
     );
 
     const html = layout({
-      title: "Earning Games - Play & Discover Reward-Based Games | GameEarn",
+      title: "Earning Games - Reward-Based Games | GameEarn",
       description: "Discover earning games and reward apps that pair regular play with points, gift cards, cashback or tournament rewards managed by each developer.",
       path: "/earning-games/",
       active: "games",
@@ -21,6 +22,10 @@ module.exports = async function handler(req, res) {
         breadcrumbTrail: [{ label: "Home", href: "/" }, { label: "Earning Games" }],
         note: "Reward availability varies by app, region and eligibility. Always check the provider's official terms before participating.",
       }),
+      jsonLd: [
+        breadcrumbLd([{ name: "Home", url: "/" }, { name: "Earning Games", url: "/earning-games/" }]),
+        itemListLd(games, "Earning Games — GameEarn"),
+      ],
     });
 
     res.setHeader("Content-Type", "text/html; charset=utf-8");

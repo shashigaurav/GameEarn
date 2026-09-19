@@ -2,6 +2,7 @@ const { layout } = require("../build/layout");
 const { getPublishedGames } = require("../lib/gameQueries");
 const { CATEGORIES } = require("../data/games");
 const { errorPage } = require("../lib/errorPage");
+const { breadcrumbLd } = require("../lib/seo");
 
 module.exports = async function handler(req, res) {
   try {
@@ -26,6 +27,7 @@ module.exports = async function handler(req, res) {
     }).join("")}
   </div>
 </div></section>`,
+      jsonLd: [breadcrumbLd([{ name: "Home", url: "/" }, { name: "Categories", url: "/category/" }])],
     });
 
     res.setHeader("Content-Type", "text/html; charset=utf-8");

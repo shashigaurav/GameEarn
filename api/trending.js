@@ -2,6 +2,7 @@ const { layout } = require("../build/layout");
 const { listingPage } = require("../build/pages/listing");
 const { getPublishedGames } = require("../lib/gameQueries");
 const { errorPage } = require("../lib/errorPage");
+const { breadcrumbLd, itemListLd } = require("../lib/seo");
 
 module.exports = async function handler(req, res) {
   try {
@@ -18,6 +19,10 @@ module.exports = async function handler(req, res) {
         games,
         breadcrumbTrail: [{ label: "Home", href: "/" }, { label: "Trending" }],
       }),
+      jsonLd: [
+        breadcrumbLd([{ name: "Home", url: "/" }, { name: "Trending", url: "/trending/" }]),
+        itemListLd(games, "Trending Games — GameEarn"),
+      ],
     });
 
     res.setHeader("Content-Type", "text/html; charset=utf-8");

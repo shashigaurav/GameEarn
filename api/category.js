@@ -4,6 +4,7 @@ const { getPublishedGames } = require("../lib/gameQueries");
 const { CATEGORIES } = require("../data/games");
 const { errorPage } = require("../lib/errorPage");
 const { notFoundPage } = require("../build/pages/static");
+const { breadcrumbLd, itemListLd } = require("../lib/seo");
 
 module.exports = async function handler(req, res) {
   try {
@@ -35,6 +36,10 @@ module.exports = async function handler(req, res) {
         showCategoryFilter: false,
         relatedCategories: related,
       }),
+      jsonLd: [
+        breadcrumbLd([{ name: "Home", url: "/" }, { name: "Categories", url: "/category/" }, { name: cat.name, url: `/category/${cat.slug}/` }]),
+        itemListLd(catGames, `${cat.name} Games — GameEarn`),
+      ],
     });
 
     res.setHeader("Content-Type", "text/html; charset=utf-8");

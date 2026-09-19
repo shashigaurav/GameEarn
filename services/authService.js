@@ -75,5 +75,8 @@ export function friendlyAuthError(err) {
   if (lower.includes("rate limit") || lower.includes("too many requests")) {
     return "Too many attempts — please wait a moment and try again.";
   }
+  if (lower.includes("email logins are disabled") || lower.includes("email provider is disabled") || lower.includes("email signups are disabled")) {
+    return "Email login is turned off for this Supabase project. In the Supabase Dashboard, go to Authentication → Providers → Email and enable it.";
+  }
   return msg || "Something went wrong. Please try again.";
 }

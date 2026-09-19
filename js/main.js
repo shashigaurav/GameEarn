@@ -163,4 +163,61 @@
     loadMoreBtnId: "loadMoreBtn",
   });
 
+  /* ---------------- shared toast helper (public pages) ---------------- */
+  function showToast(message, type) {
+    var stack = document.getElementById("toastStack");
+    if (!stack) return;
+    var el = document.createElement("div");
+    el.className = "toast" + (type ? " " + type : "");
+    el.textContent = message;
+    stack.appendChild(el);
+    setTimeout(function () {
+      el.style.opacity = "0";
+      el.style.transition = "opacity 0.3s ease";
+      setTimeout(function () { el.remove(); }, 300);
+    }, 2600);
+  }
+
+  /* ---------------- back to top ---------------- */
+  var backToTopBtn = document.getElementById("backToTopBtn");
+  if (backToTopBtn) {
+    var toggleBackToTop = function () {
+      var show = window.scrollY > 480;
+      backToTopBtn.hidden = false; // keep in DOM/tabbable; visibility handled by the class
+      backToTopBtn.classList.toggle("visible", show);
+    };
+    window.addEventListener("scroll", toggleBackToTop, { passive: true });
+    toggleBackToTop();
+    backToTopBtn.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
+  /* ---------------- homepage: language pill (no fake translations) ---------------- */
+  var langPillBtn = document.getElementById("langPillBtn");
+  if (langPillBtn) {
+    langPillBtn.addEventListener("click", function () {
+      showToast("More languages coming soon — GameEarn is currently available in English.");
+    });
+  }
+
+  /* ---------------- homepage: share ---------------- */
+  var shareSiteBtn = document.getElementById("shareSiteBtn");
+  if (shareSiteBtn) {
+    shareSiteBtn.addEventListener("click", function () {
+      var url = window.location.href;
+      if (navigator.share) {
+        navigator.share({ title: "GameEarn", text: "Discover games, apps and reward opportunities on GameEarn.", url: url }).catch(function () {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(function () {
+          showToast("Link copied!", "success");
+        }).catch(function () {
+          showToast("Couldn't copy the link — please copy it from the address bar.", "error");
+        });
+      } else {
+        showToast("Couldn't copy the link — please copy it from the address bar.", "error");
+      }
+    });
+  }
+
 })();

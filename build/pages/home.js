@@ -4,10 +4,11 @@ const {
   trustCard,
   faqList,
   notePanel,
+  esc,
 } = require("../components");
 const { CATEGORIES } = require("../../data/games");
 
-function homePage(games) {
+function homePage(games, { telegramUrl = null } = {}) {
   const popularGames = [...games].sort((a, b) => b.rating - a.rating).slice(0, 8);
   const trendingGames = games.filter((g) => g.trending).slice(0, 3);
   const newGames = [...games].filter((g) => g.newRelease).slice(0, 4);
@@ -121,6 +122,54 @@ ${
       { q: "Where do downloads happen?", a: "GameEarn doesn't host any files. Every download button links directly to the game's own official page." },
       { q: "How often are new games added?", a: "New and trending titles are refreshed regularly — check the New and Trending pages for the latest additions." },
     ])}
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="seo-content prose">
+      <h2>GameEarn — Discover Games, Apps &amp; Reward Opportunities</h2>
+      <p>GameEarn helps you discover games, apps and reward opportunities in one place. Explore game information, categories, trending titles and newly added apps, then visit the official source when you are ready to learn more or download.</p>
+      <p>Every listing is organized into clear categories — from casual and puzzle games to earning games that run their own in-app reward programs — so you can browse gaming apps by exactly the kind of experience you're after. The Trending and New Games pages make game discovery easier by surfacing what's picking up attention right now or has just been added, without digging through a cluttered app store.</p>
+      <p>Reward information shown on a game's page, where applicable, is descriptive only and set entirely by that game's developer — it can vary by app, region and eligibility, and GameEarn does not guarantee any outcome. Always review the official source and its current terms before downloading or using an app.</p>
+    </div>
+  </div>
+</section>
+
+${
+  telegramUrl
+    ? `<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="telegram-cta glass">
+      <div>
+        <h2>Join GameEarn on Telegram</h2>
+        <p>Get notified when new and trending games are added.</p>
+      </div>
+      <a href="${esc(telegramUrl)}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Join Telegram</a>
+    </div>
+  </div>
+</section>`
+    : ""
+}
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="homepage-utility-row">
+      <div class="utility-block">
+        <span class="utility-label">Language</span>
+        <button class="lang-pill" id="langPillBtn" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 4 6 4 9s-1.5 6.4-4 9c-2.5-2.6-4-6-4-9s1.5-6.4 4-9z"/></svg>
+          English
+        </button>
+      </div>
+      <div class="utility-block">
+        <span class="utility-label">Share GameEarn</span>
+        <button class="btn btn-ghost btn-sm" id="shareSiteBtn" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-3.9M8.6 13.5l6.8 3.9"/></svg>
+          Share
+        </button>
+      </div>
+    </div>
   </div>
 </section>
 

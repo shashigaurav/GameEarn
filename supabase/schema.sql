@@ -62,7 +62,13 @@ security definer
 set search_path = public
 as $$
 begin
-  if new.role is distinct from old.role and not public.is_admin() then
+  -- auth.uid() is NULL when there's no authenticated app user in this session —
+  -- e.g. the SQL Editor, a migration, or any direct database connection made
+  -- by you as the project owner. That already implies full trust, so this only
+  -- blocks role changes coming from an authenticated NON-admin app user trying
+  -- to escalate themselves through the public API (the actual threat this
+  -- trigger exists to stop).
+  if auth.uid() is not null and new.role is distinct from old.role and not public.is_admin() then
     new.role := old.role;
   end if;
   return new;
