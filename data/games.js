@@ -15,7 +15,7 @@ const CATEGORIES = [
   { slug: "adventure", name: "Adventure", blurb: "Story-driven exploration and quest-based games." },
 ];
 
-const REWARD_TYPES = ["50", "100", "200", "250", "500", "1000", "150"];
+const REWARD_TYPES = ["Gift Cards", "Points", "Rewards", "Tournament Rewards", "Cashback", "In-game Rewards", "None"];
 
 const PLATFORMS = ["Android", "iOS", "Android, iOS", "Windows", "Android, iOS, Windows"];
 

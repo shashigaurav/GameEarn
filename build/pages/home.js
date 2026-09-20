@@ -101,6 +101,17 @@ ${
   </div>
 </section>
 
+<section class="marquee-section" aria-label="Game categories on GameEarn">
+  <div class="marquee-track">
+    <div class="marquee-content">
+      ${CATEGORIES.map((c) => `<a href="/category/${c.slug}/" class="marquee-pill">${c.name}</a>`).join("")}
+    </div>
+    <div class="marquee-content" aria-hidden="true">
+      ${CATEGORIES.map((c) => `<a href="/category/${c.slug}/" class="marquee-pill" tabindex="-1">${c.name}</a>`).join("")}
+    </div>
+  </div>
+</section>
+
 <section class="section" style="padding-top:0;">
   <div class="container">
     <div class="section-head"><div><h2>How It Works</h2><p>Three steps between you and your next game.</p></div></div>

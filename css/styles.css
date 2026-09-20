@@ -1027,3 +1027,46 @@ select.filter-select {
 .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
 .back-to-top:hover { border-color: var(--green); box-shadow: var(--glow-green); }
 @media (max-width: 720px) { .back-to-top { bottom: calc(var(--bottom-nav-h) + 16px + env(safe-area-inset-bottom, 0px)); } }
+
+/* ============================================================
+   Homepage category marquee (after "Why GameEarn?")
+   ============================================================ */
+.marquee-section {
+  overflow: hidden;
+  padding: 22px 0;
+  background: linear-gradient(90deg, rgba(53,242,166,0.05), rgba(61,187,255,0.05));
+  border-top: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--border-soft);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 32s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+.marquee-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-right: 14px;
+  flex-shrink: 0;
+}
+.marquee-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 20px;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color .15s ease, border-color .15s ease, background .15s ease;
+}
+.marquee-pill:hover { color: var(--text); border-color: var(--green); background: rgba(53,242,166,0.08); }
+
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
