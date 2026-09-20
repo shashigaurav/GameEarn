@@ -181,7 +181,7 @@ function gameCard(g, { rank = null, badge = null } = {}) {
         ${freeBadge(g.freeToPlay)}
         ${rewardBadge(g.rewardType)}
       </div>
-      <a href="/games/${g.slug}/" class="btn btn-ghost btn-sm">View Details</a>
+      <a href="/games/${g.slug}/" class="btn btn-ghost btn-sm">Download</a>
     </div>
   </div>
 </article>`;
@@ -205,7 +205,7 @@ function featuredCard(g) {
     <p class="desc">${esc(g.description.slice(0, 110))}${g.description.length > 110 ? "…" : ""}</p>
     <div class="card-foot">
       <div style="display:flex;gap:6px;flex-wrap:wrap;">${freeBadge(g.freeToPlay)}${rewardBadge(g.rewardType)}</div>
-      <a href="/games/${g.slug}/" class="btn btn-primary btn-sm">View Details</a>
+      <a href="/games/${g.slug}/" class="btn btn-primary btn-sm">Download</a>
     </div>
   </div>
 </article>`;

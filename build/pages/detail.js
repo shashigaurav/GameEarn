@@ -30,7 +30,7 @@ function detailPage(game, relatedGames) {
     { q: `Is ${game.name} free to play?`, a: game.freeToPlay ? `Yes, ${game.name} is free to play. Some optional purchases or in-app offers may still be available depending on the developer.` : `${game.name} is a paid title. Check the official source page for current pricing.` },
     { q: `What platforms is ${game.name} available on?`, a: `${game.name} is available on ${game.platform}. Always confirm device compatibility on the official source page before downloading.` },
     { q: `How do rewards work in ${game.name}?`, a: game.rewardType === "None" ? `${game.name} does not run a rewards program at this time.` : `${game.name} offers ${game.rewardType.toLowerCase()} through a program run by ${game.developer}. Reward availability varies by app, region and eligibility — review the developer's official terms for full details.` },
-    { q: `Where can I download ${game.name}?`, a: `Use the "Visit Official Source" button on this page to go to ${game.developer}'s official page for ${game.name}.` },
+    { q: `Where can I download ${game.name}?`, a: `Use the "Download" button on this page to go to ${game.developer}'s official page for ${game.name}.` },
   ];
 
   return `
@@ -65,10 +65,10 @@ function detailPage(game, relatedGames) {
         <div class="meta-block"><div class="label">Version</div><div class="value">${game.version}</div></div>
         <div class="meta-block"><div class="label">Size</div><div class="value">${game.size}</div></div>
         <div class="meta-block"><div class="label">Release Date</div><div class="value">${game.releaseDate}</div></div>
-        <div class="meta-block"><div class="label">Reward Type</div><div class="value">${game.rewardType}</div></div>
+        <div class="meta-block"><div class="label">Bonus</div><div class="value">${game.rewardType}</div></div>
       </div>
       <div class="detail-actions">
-        <a href="${game.sourceUrl}" class="btn btn-primary" rel="nofollow sponsored noopener" target="_blank">Visit Official Source</a>
+        <a href="${game.sourceUrl}" class="btn btn-primary" rel="nofollow sponsored noopener" target="_blank">Download</a>
         <a href="/category/${game.category}/" class="btn btn-ghost">More in ${categoryLabel(game.category)}</a>
       </div>
     </div>

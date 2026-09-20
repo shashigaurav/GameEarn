@@ -77,7 +77,7 @@ function gameFormPage(mode) {
     </div>
 
     <div class="form-field">
-      <label for="f-reward-type">Reward Type</label>
+      <label for="f-reward-type">Bonus</label>
       <select id="f-reward-type">
         ${REWARD_TYPES.map((r) => `<option value="${r}">${r}</option>`).join("")}
       </select>

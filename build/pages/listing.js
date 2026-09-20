@@ -62,8 +62,8 @@ function listingPage(opts) {
         <option value="ios">iOS</option>
         <option value="windows">Windows</option>
       </select>
-      <select class="filter-select" id="filterReward" aria-label="Filter by reward type">
-        <option value="">All Reward Types</option>
+      <select class="filter-select" id="filterReward" aria-label="Filter by bonus type">
+        <option value="">All Bonus Types</option>
         ${rewardTypesPresent.map((r) => `<option value="${r.toLowerCase()}">${r}</option>`).join("")}
       </select>
       <select class="filter-select" id="filterGenre" aria-label="Filter by genre">

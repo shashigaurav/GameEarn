@@ -30,7 +30,7 @@ function cardHtml(item) {
     item.platform ? `<span>&middot;</span><span>${esc(item.platform)}</span>` : ""
   }</div>
       <p class="desc">${esc(desc)}</p>
-      <div class="card-foot"><div style="display:flex;gap:6px;flex-wrap:wrap;">${freeBadge}${rewardBadge}</div><a href="${href}" class="btn btn-ghost btn-sm">View Details</a></div>
+      <div class="card-foot"><div style="display:flex;gap:6px;flex-wrap:wrap;">${freeBadge}${rewardBadge}</div><a href="${href}" class="btn btn-ghost btn-sm">Download</a></div>
     </div>
   </article>`;
 }
