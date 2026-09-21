@@ -28,6 +28,7 @@ function layout({ title, description, path, ogImage, active = "", content, jsonL
   const image = ogImage ? `${SITE_URL}${ogImage}` : `${SITE_URL}/assets/og-default.svg`;
   const safeTitle = esc(title);
   const safeDescription = esc(description);
+  const telegramUrl = process.env.VITE_TELEGRAM_URL || null;
   const ldBlocks = jsonLd
     .map((obj) => `<script type="application/ld+json">${JSON.stringify(obj)}</script>`)
     .join("\n");
@@ -72,6 +73,18 @@ ${bottomNav(active)}
 <button class="back-to-top" id="backToTopBtn" type="button" aria-label="Back to top" hidden>
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
 </button>
+${
+  telegramUrl
+    ? `<a href="${esc(telegramUrl)}" class="telegram-float-btn" id="telegramFloatBtn" target="_blank" rel="noopener noreferrer" aria-label="Join GameEarn on Telegram">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.5 3.5L2.7 10.9c-1.2.5-1.2 1.2-.2 1.5l4.8 1.5 1.9 5.8c.2.6.4.8.9.8.5 0 .7-.2 1-.5l2.4-2.3 4.9 3.6c.9.5 1.5.2 1.8-.8l3.2-15.2c.4-1.3-.4-1.8-1.4-1.4zM8.6 13.6l9.5-6c.5-.3.9-.1.6.3l-8 7.6-.3 3.3-1.5-4.3z"/></svg>
+</a>
+<div class="telegram-popup" id="telegramPopup" role="status">
+  <button class="telegram-popup-close" id="telegramPopupClose" type="button" aria-label="Dismiss">&times;</button>
+  <p>Join GameEarn on Telegram for updates on new and trending games!</p>
+  <a href="${esc(telegramUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Join Telegram</a>
+</div>`
+    : ""
+}
 <div class="toast-stack" id="toastStack" aria-live="polite"></div>
 <script src="/js/main.js" defer></script>
 </body>

@@ -220,4 +220,25 @@
     });
   }
 
+  /* ---------------- floating telegram popup (site-wide, every page load) ---------------- */
+  var telegramPopup = document.getElementById("telegramPopup");
+  if (telegramPopup) {
+    var tgHideTimer;
+    var tgShowTimer = setTimeout(function () {
+      telegramPopup.classList.add("visible");
+      tgHideTimer = setTimeout(function () {
+        telegramPopup.classList.remove("visible");
+      }, 12000);
+    }, 2500);
+
+    var tgCloseBtn = document.getElementById("telegramPopupClose");
+    if (tgCloseBtn) {
+      tgCloseBtn.addEventListener("click", function () {
+        clearTimeout(tgShowTimer);
+        clearTimeout(tgHideTimer);
+        telegramPopup.classList.remove("visible");
+      });
+    }
+  }
+
 })();

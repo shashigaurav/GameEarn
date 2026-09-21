@@ -1070,3 +1070,54 @@ select.filter-select {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
+
+/* ============================================================
+   Site-wide floating Telegram button + attention popup
+   Only rendered when VITE_TELEGRAM_URL is configured (see layout.js)
+   ============================================================ */
+.telegram-float-btn {
+  position: fixed;
+  left: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  width: 52px; height: 52px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #2AABEE, #229ED9);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 10px 26px -8px rgba(42, 171, 238, 0.65);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.telegram-float-btn:hover { transform: scale(1.08); box-shadow: 0 12px 30px -6px rgba(42, 171, 238, 0.8); }
+@media (max-width: 720px) {
+  .telegram-float-btn { bottom: calc(var(--bottom-nav-h) + 16px + env(safe-area-inset-bottom, 0px)); }
+}
+
+.telegram-popup {
+  position: fixed;
+  left: 20px;
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  z-index: 61;
+  width: 250px;
+  max-width: calc(100vw - 40px);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 16px 40px -14px rgba(0,0,0,0.55);
+  opacity: 0; visibility: hidden; transform: translateY(10px) scale(0.97);
+  transition: opacity .25s ease, transform .25s ease, visibility .25s ease;
+}
+.telegram-popup.visible { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+.telegram-popup p { font-size: 0.85rem; color: var(--text-muted); margin: 0 0 12px; padding-right: 16px; line-height: 1.4; }
+.telegram-popup-close {
+  position: absolute; top: 8px; right: 10px;
+  background: none; border: none; color: var(--text-faint);
+  font-size: 1.15rem; line-height: 1; cursor: pointer; padding: 4px;
+}
+.telegram-popup-close:hover { color: var(--text); }
+@media (max-width: 720px) {
+  .telegram-popup { bottom: calc(var(--bottom-nav-h) + 80px + env(safe-area-inset-bottom, 0px)); }
+}
